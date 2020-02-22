@@ -1,5 +1,8 @@
-const Vue = require('vue')
-const VueRouter = require('vue-router')
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+
+const Home = () => import('views/home/Home')
+const Category = () => import('views/category/Category')
 
 Vue.use(VueRouter);
 
@@ -18,4 +21,4 @@ const router = new VueRouter({
   mode: 'history'
 })
 
-module.exports = router
+export default router

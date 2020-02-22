@@ -18,7 +18,6 @@ body {
   -webkit-tap-highlight-color: transparent;
   /* webkit是苹果浏览器引擎，tap点击，highlight背景高亮，color颜色，颜色用数值调节 */
   /* background: var(--color-background); */
-  width: 100vw;
 }
 
 /* 内外边距 */
@@ -215,7 +214,7 @@ a:focus,
 /*公共类*/
 .w {
   /*版心 提取 */
-  width: 1210px;
+  width: 1050px;
   margin: 0 auto;
 }
 
