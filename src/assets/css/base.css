@@ -179,11 +179,7 @@ sub {
 ins,
 a {
   text-decoration: none;
-}
-
-/* hover状态下显示下划线 */
-a:hover {
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 /* 去除 ie6 & ie7 焦点点状线 */
@@ -214,7 +210,7 @@ a:focus,
 /*公共类*/
 .w {
   /*版心 提取 */
-  width: 1050px;
+  width: 1032px;
   margin: 0 auto;
 }
 

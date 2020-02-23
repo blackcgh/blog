@@ -1,21 +1,21 @@
 <template>
-  <div id="category">
-    分类
+  <div id="video">
+    视频
   </div>
 </template>
 
 <script>
   export default {
-    name: 'Category',
+    name: 'Video',
   }
 
 </script>
 
 <style scoped>
-  #category {
+  #video {
     margin-top: 60px;
     height: calc(100vh - 60px);
-    background-color: rgb(175, 80, 192);
+    background-color: rgb(231, 134, 54);
   }
 
 </style>

@@ -1,21 +1,21 @@
 <template>
-  <div id="category">
-    分类
+  <div id="audio">
+    音频
   </div>
 </template>
 
 <script>
   export default {
-    name: 'Category',
+    name: 'Audio',
   }
 
 </script>
 
 <style scoped>
-  #category {
+  #audio {
     margin-top: 60px;
     height: calc(100vh - 60px);
-    background-color: rgb(175, 80, 192);
+    background-color: rgb(199, 230, 63);
   }
 
 </style>

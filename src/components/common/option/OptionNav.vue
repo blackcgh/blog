@@ -1,21 +1,21 @@
 <template>
-  <div id="category">
-    分类
+  <div class="option-nav">
+    <slot></slot>
   </div>
 </template>
 
 <script>
   export default {
-    name: 'Category',
+    name: 'OptionNav',
   }
 
 </script>
 
 <style scoped>
-  #category {
-    margin-top: 60px;
+  .option-nav {
+    width: 80px;
     height: calc(100vh - 60px);
-    background-color: rgb(175, 80, 192);
+    background-color: skyblue;
   }
 
 </style>

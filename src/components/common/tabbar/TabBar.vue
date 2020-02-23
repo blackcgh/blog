@@ -1,18 +1,18 @@
 <template>
-  <div id="nav-bar" class="w">
+  <div id="tab-bar" class="w">
     <slot></slot>
   </div>
 </template>
 
 <script>
   export default {
-    name: 'NavBar',
+    name: 'TabBar',
   }
 
 </script>
 
 <style scoped>
-  #nav-bar {
+  #tab-bar {
     height: 58px;
   }
 

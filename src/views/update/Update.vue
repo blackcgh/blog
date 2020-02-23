@@ -1,21 +1,21 @@
 <template>
-  <div id="category">
-    分类
+  <div id="update">
+    动态
   </div>
 </template>
 
 <script>
   export default {
-    name: 'Category',
+    name: 'Update',
   }
 
 </script>
 
 <style scoped>
-  #category {
+  #update {
     margin-top: 60px;
     height: calc(100vh - 60px);
-    background-color: rgb(175, 80, 192);
+    background-color: rgb(62, 112, 228);
   }
 
 </style>
