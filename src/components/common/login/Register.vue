@@ -1,20 +1,44 @@
 <template>
   <div id="register">
-    <form action="" method="post">
-      <input type="text" placeholder="用户名">
+      <input type="text" placeholder="用户名" v-model="username">
       <br />
-      <input type="password" placeholder="密码">
+      <input type="password" placeholder="密码" v-model="password">
       <br />
-      <button>注册</button>
-    </form>
+      <button @click.prevent="btnRegister">注册</button>
   </div>
 </template>
 
 <script>
+  import { register } from 'network/user'
+
   export default {
     name: 'Register',
-  }
+    data() {
+      return {
+        username: '',
+        password: ''
+      }
+    },
+    methods: {
+      btnRegister() {
+        const data = {};
+        data.username = this.username;
+        data.password = this.password;
+        register(data).then(result => {
+          if(result.errno === 0) {
+            this.$router.replace('/home');
+            this.$store.commit('showState');
+            this.$store.commit('loginState', this.username);
+          } else if(result.errno === -1) {
+            alert('该用户已存在！')
+          } else {
+            alert('其他错误')
+          }
 
+        })
+      }
+    }
+  }
 </script>
 
 <style scoped>
@@ -43,5 +67,9 @@
     font-size: 18px;
     line-height: 43px;
     border-radius: 25px;
+  }
+
+  button:hover {
+    background-color: #23a50f;
   }
 </style>

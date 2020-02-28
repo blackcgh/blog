@@ -9,7 +9,7 @@
         <template v-slot:function>分类</template>
         <template v-slot:spread>
           <em></em>
-          <main-nav-menu></main-nav-menu>
+          <c-nav-menu></c-nav-menu>
         </template>
       </Tab-bar-item>
       <Tab-bar-item path="/update">
@@ -30,10 +30,10 @@
       </Tab-bar-item>
     </Tab-bar>
     <div class="search">
-      <input type="search" placeholder="输入关键字搜索..." @focus="changeLength" @blur="recover">
-      <input type="button" value="搜索">
+      <input type="search" placeholder="输入关键字搜索...">
+      <button type="button"><span class="iconfont">&#xe61c;</span></button>
     </div>
-    <div id="login" @click="login">登录 / 注册</div>
+    <login-state></login-state>
   </div>
 </template>
 
@@ -41,26 +41,17 @@
   import TabBar from 'components/common/tabbar/TabBar'
   import TabBarItem from 'components/common/tabbar/TabBarItem'
 
-  import MainNavMenu from 'components/content/mainnavmenu/MainNavMenu'
+  import CNavMenu from 'views/category/childcomps/CNavMenu'
+
+    import LoginState from './LoginState'
 
   export default {
     name: 'MainTabBar',
-    methods: {
-      changeLength() {
-        document.querySelector('input[type=search]').style.width = 300 + 'px';
-      },
-      recover() {
-        document.querySelector('input[type=search]').style.width = 200 + 'px';
-      },
-      login() {
-        this.$router.replace('/user');
-
-      }
-    },
     components: {
       TabBar,
       TabBarItem,
-      MainNavMenu
+      CNavMenu,
+      LoginState
     }
   }
 
@@ -72,10 +63,9 @@
     top: 0;
     left: 0;
     width: 100%;
-    border-bottom: 2px solid rgb(236, 224, 224);
-    background-color: #fff;
+    background-color: #3f4257;
     font-size: 17px;
-    line-height: 58px;
+    line-height: 60px;
   }
 
   h1 {
@@ -92,17 +82,17 @@
     right: 10px;
     width: 5px;
     height: 5px;
-    border-left: 1px solid #000;
-    border-bottom: 1px solid #000;
+    border-left: 1px solid #fff;
+    border-bottom: 1px solid #fff;
     transform: rotate(-45deg);
-    transition: all .4s;
+    transition: all .3s;
   }
 
   .tab-bar-item:hover em {
     transform: rotate(-225deg)
   }
 
-  .tab-bar-item:hover .main-nav-menu {
+  .tab-bar-item:hover .c-nav-menu {
     display: block;
   }
 
@@ -112,44 +102,42 @@
     left: 700px;
   }
 
-  input {
+  input,
+  button {
     height: 36px;
     background-color: #f0f0f0;
     line-height: 36px;
     font-size: 14px;
+    vertical-align: middle;
   }
 
   input[type="search"] {
-    width: 200px;
+    width: 150px;
     padding-left: 18px;
     border-radius: 18px 0 0 18px;
     box-sizing: border-box;
     transition: width .4s;
   }
 
-  input[type="button"] {
+  input[type="search"]:focus {
+    width: 250px;
+  }
+
+  button {
+    width: 35px;
     border-radius: 0 18px 18px 0;
   }
 
-  #login {
-    position: absolute;
-    top: 12px;
-    right: 0;
-    width: 100px;
-    height: 36px;
-    margin-right: 50px;
-    border: 1px solid #f1563b;
-    line-height: 36px;
-    text-align: center;
-    border-radius: 18px;
-    color: #f1563b;
-    font-weight: 700;
-    cursor: pointer;
+  button span {
+    float: left;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    line-height: 30px;
   }
 
-  #login:hover {
-    background-color: #f1563b;
-    color: #fff;
+  input[type="search"]:focus + button span {
+    background-color: #969696;
   }
 
 </style>

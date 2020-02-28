@@ -7,8 +7,8 @@ const Update = () => import('views/update/Update')
 const Picture = () => import('views/picture/Picture')
 const Audio = () => import('views/audio/Audio')
 const Video = () => import('views/video/Video')
+const User = () => import('views/user/User')
 
-const User = () => import('components/content/user/User')
 const Login = () => import('components/common/login/Login')
 const Register = () => import('components/common/login/Register')
 

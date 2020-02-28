@@ -13,8 +13,7 @@
 
 <style scoped>
   #category {
-    margin-top: 60px;
-    height: calc(100vh - 60px);
+    height: calc(100vh - 90px);
     background-color: rgb(175, 80, 192);
   }
 

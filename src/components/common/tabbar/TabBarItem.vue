@@ -27,7 +27,7 @@
     methods: {
       click() {
         if (!this.isActive) {
-          this.$router.replace(this.path)
+          this.$router.push(this.path)
         }
 
       }
@@ -39,17 +39,17 @@
 <style scoped>
   .tab-bar-item {
     position: relative;
-
+    color: #fff;
+    cursor: pointer;
   }
 
   .function {
     padding: 0 25px;
-    cursor: pointer;
   }
 
   .tab-bar-item:hover .function {
     color: #f1563b;
-    background-color: rgb(245, 245, 245);
+    /* background-color: #ecf1f5; */
   }
 
   .current {

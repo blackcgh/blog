@@ -37,6 +37,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
+    margin: 0;
     background-color: #f1f1f1;
     z-index: 1;
   }
@@ -52,6 +53,7 @@
     padding: 50px;
     text-align: center;
     font-size: 18px;
+    box-shadow: 0 0 7px 3px rgba(100, 100, 100, .2)
   }
 
   a {

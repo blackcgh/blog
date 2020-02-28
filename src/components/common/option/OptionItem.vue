@@ -13,9 +13,10 @@ export default {
 
 <style scoped>
 .option-item {
+  padding: 15px 0;
+  font-size: 14px;
   color: #6f7172;
   text-align: center;
-  padding: 15px 0;
 }
 
 .item-iconfont {

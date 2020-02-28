@@ -15,7 +15,6 @@
   .option-nav {
     width: 80px;
     height: calc(100vh - 60px);
-    background-color: skyblue;
   }
 
 </style>

@@ -1,66 +1,25 @@
 <template>
-  <div id="home">
-    首页
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
-    <p>dd</p>
+  <div id="home" class="clearfix">
+    <home-content></home-content>
+    <aside-content></aside-content>
   </div>
 </template>
 
 <script>
+  import HomeContent from './childcomps/HomeContent'
+  import AsideContent from 'components/content/maincontent/AsideContent'
+
   export default {
     name: 'Home',
+    components: {
+      HomeContent,
+      AsideContent,
+    },
+    created() {
+    }
   }
 
 </script>
 
 <style scoped>
-  #home {
-    margin-top: 60px;
-    height: calc(100vh - 60px);
-    background-color: pink;
-  }
-
 </style>

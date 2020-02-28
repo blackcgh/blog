@@ -1,20 +1,45 @@
 <template>
   <div id="login">
-    <form action="" method="post">
-      <input type="text" placeholder="用户名">
-      <br />
-      <input type="password" placeholder="密码">
-      <br />
-      <input type="checkbox" id="remember"><label for="remember">记住我</label>
-      <br />
-      <button>登录</button>
-    </form>
+    <input type="text" placeholder="用户名" v-model="username">
+    <br />
+    <input type="password" placeholder="密码" v-model="password">
+    <br />
+    <input type="checkbox" id="remember"><label for="remember">记住我</label>
+    <br />
+    <button @click.prevent="btnLogin">登录</button>
   </div>
 </template>
 
 <script>
+  import { login } from 'network/user'
+
   export default {
     name: 'Login',
+    data() {
+      return {
+        username: '',
+        password: ''
+      }
+    },
+    methods: {
+      btnLogin() {
+        const data = {};
+        data.username = this.username;
+        data.password = this.password;
+        login(data).then(result => {
+          if(result.errno === 0) {
+            this.$router.replace('/home');
+            this.$store.commit('showState');
+            this.$store.commit('loginState', this.username);
+          } else if(result.errno === -1) {
+            alert('登录失败！')
+          } else {
+            alert('其他错误');
+
+          }
+        })
+      }
+    }
   }
 
 </script>
@@ -54,4 +79,9 @@
     line-height: 43px;
     border-radius: 25px;
   }
+
+  button:hover {
+    background-color: #0f6fac;
+  }
+
 </style>

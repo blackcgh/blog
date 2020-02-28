@@ -13,7 +13,7 @@
 
 <style scoped>
   #tab-bar {
-    height: 58px;
+    height: 60px;
   }
 
 </style>

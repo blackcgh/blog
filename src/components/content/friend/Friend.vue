@@ -43,7 +43,10 @@
   #friend {
     position: fixed;
     top: 60px;
-    right: 0;
+    right: -80px;
+    padding-top: 10px;
+    background-color: #fff;
+    transition: all .8s;
   }
 
 </style>
