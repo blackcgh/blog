@@ -16,7 +16,6 @@
     height: 50px;
     line-height: 50px;
     padding-left: 15px;
-
     font-size: 14px;
     color: #6f7172;
   }
