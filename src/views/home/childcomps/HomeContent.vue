@@ -1,27 +1,30 @@
 <template>
   <div class="home-content">
     <main-content>
-      <div class="article">
-        <h2>文章推荐</h2>
-        <recommend></recommend>
-        <recommend></recommend>
-        <recommend></recommend>
-      </div>
-      <div class="article">
-        <h2>图片推荐</h2>
-        <recommend></recommend>
-        <recommend></recommend>
-      </div>
-      <div class="article">
-        <h2>音频推荐</h2>
-        <recommend></recommend>
-        <recommend></recommend>
-      </div>
-      <div class="article">
-        <h2>视频推荐</h2>
-        <recommend></recommend>
-        <recommend></recommend>
-      </div>
+      <span>博客推荐</span>
+      <template v-slot:mc>
+        <recommend v-for="(item,index) of blogList" :key="index" :item="item"></recommend>
+        <div class="more" @click="showMore" v-if="!isEnd">...</div>
+        <div class="end" v-else>已经到尽头了~</div>
+      </template>
+    </main-content>
+    <main-content>
+      <span>图片推荐</span>
+      <template v-slot:mc>
+        <div class="more">...</div>
+      </template>
+    </main-content>
+    <main-content>
+    <span>音频推荐</span>
+      <template v-slot:mc>
+        <div class="more">...</div>
+      </template>
+    </main-content>
+    <main-content>
+      <span>视频推荐</span>
+      <template v-slot:mc>
+        <div class="more">...</div>
+      </template>
     </main-content>
   </div>
 </template>
@@ -30,11 +33,43 @@
   import MainContent from 'components/content/maincontent/MainContent'
   import Recommend from 'components/content/maincontent/Recommend'
 
+  import { getAll } from 'network/blog'
+
   export default {
     name: 'HomeContent',
+    data() {
+      return {
+        blogList: [],
+        isEnd: false, // 是否到尽头
+      }
+    },
     components: {
       MainContent,
       Recommend
+    },
+    created() {
+      this.$store.commit('increment'); // 不携带flag
+      getAll(this.$store.state.blogCount).then(result => {
+        if(result.data.flag) {
+          this.isEnd = true;
+        }
+        if(result.data.data) {
+          this.blogList.push(...(result.data.data.reverse())); // 数据反转、解构，再追加给blogList
+        }
+      })
+    },
+    methods: {
+      showMore() {
+        this.$store.commit('increment', true); // 携带flag
+        getAll(this.$store.state.blogCount).then(result => {
+          if(result.data.flag) {
+            this.isEnd = true;
+          }
+          if(result.data.data) {
+            this.blogList.push(...(result.data.data.reverse())); // 数据反转、解构，再追加给blogList
+          }
+        })
+      }
     }
   }
 
@@ -47,24 +82,36 @@
     box-sizing: border-box;
   }
 
-  .article {
-    background-color: #fff;
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 5px;
-  }
-
-  .article h2 {
+  span {
+    display: inline-block;
     height: 36px;
-    border-bottom: 4px solid #f1563b;
-    margin-bottom: 10px;
-    font-size: 20px;
-    font-weight: 700;
+    padding: 0 5px;
+    background-color: #f1563b;
+    line-height: 36px;
+    color: #fff;
   }
 
-  .recommend:last-child {
-    margin-bottom: 0;
-    border-bottom: none;
+  .more {
+    width: 100px;
+    height: 30px;
+    margin: 0 auto;
+    background-color: #ecf1f5;
+    font-size: 33px;
+    color: #f1563b;
+    text-align: center;
+    line-height: 15px;
+    border-radius: 15px;
+  }
+
+  .more:hover {
+    background-color: #f1563b;
+    color: #fff;
+  }
+
+  .end {
+    text-align: center;
+    font-size: 14px;
+    color: #969696;
   }
 
 </style>

@@ -33,7 +33,7 @@
     position: absolute;
     display: none;
     top: 60px;
-    left: -33px;
+    left: 10px;
     background-color: #fff;
   }
 

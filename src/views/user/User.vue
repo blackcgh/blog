@@ -2,10 +2,9 @@
   <div id="user">
     <div class="main">
       <router-link to="/user/login" :class="{current: isCurrent}">登录</router-link>
-      <b>.</b>
       <router-link to="/user/register" :class="{current: !isCurrent}">注册</router-link>
       <router-view></router-view>
-      <i @click="goBack">*</i>
+      <i @click="back"><em>+</em></i>
     </div>
   </div>
 </template>
@@ -22,7 +21,7 @@
       }
     },
     methods: {
-      goBack() {
+      back() {
         this.$router.replace('/');
       }
     }
@@ -38,34 +37,36 @@
     width: 100vw;
     height: 100vh;
     margin: 0;
-    background-color: #f1f1f1;
-    z-index: 1;
+    background-color: #ecf1f5;
+    z-index: 100;
   }
 
   .main {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 400px;
-    height: 400px;
-    transform: translate(-50%, -50%);
+    position: relative;
+    width: 330px;
+    height: 340px;
+    padding: 30px;
+    margin: 100px auto 0;
     background-color: #fff;
-    padding: 50px;
-    text-align: center;
     font-size: 18px;
-    box-shadow: 0 0 7px 3px rgba(100, 100, 100, .2)
+    box-shadow: 0 0 7px 3px rgba(100, 100, 100, .2);
+    border-radius: 5px;
   }
 
   a {
     display: inline-block;
-    width: 56px;
+    width: 60px;
     height: 42px;
     padding: 10px;
-    border-bottom: 2px solid transparent;
+    border-bottom: 3px solid transparent;
     color: #969696;
     cursor: pointer;
     box-sizing: border-box;
-    margin-bottom: 50px;
+    margin-bottom: 30px;
+  }
+
+  a:first-child {
+    margin-left: 105px;
   }
 
   a:hover {
@@ -87,14 +88,23 @@
 
   i {
     position: absolute;
-    top: -25px;
-    right: -25px;
-    width: 50px;
-    height: 50px;
-    line-height: 95px;
-    background-color: #fff;
-    border-radius: 50%;
-    font-size: 100px;
+    top: 10px;
+    right: 10px;
+    width: 26px;
+    height: 25px;
+  }
+
+  em {
+    position: absolute;
+    top: -4px;
+    left: 4px;
+    font-size: 30px;
+    color: #000;
+    transform: rotate(135deg);
+  }
+
+  em:hover {
+    color: #f1563b;
   }
 
 </style>

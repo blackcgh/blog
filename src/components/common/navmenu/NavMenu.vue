@@ -21,7 +21,7 @@
     content: '';
     position: absolute;
     top: -16px;
-    left: 82px;
+    left: 25px;
     border: 8px solid transparent;
     border-bottom-color: #fff;
   }

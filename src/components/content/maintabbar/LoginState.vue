@@ -20,7 +20,6 @@
     methods: {
       login() {
         this.$router.push('/user');
-
       }
     },
   }
@@ -31,7 +30,7 @@
   .ls {
     position: absolute;
     top: 12px;
-    right: 150px;
+    right: 160px;
     bottom: 0;
     width: 100px;
     line-height: 36px;

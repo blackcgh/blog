@@ -17,11 +17,7 @@
     },
     computed: {
       isActive() {
-        if (this.$route.path === '/') {
-          let path = '/home';
-          return this.path.indexOf(path) !== -1;
-        }
-        return this.path.indexOf(this.$route.path) !== -1;
+        return this.path === this.$route.path;
       }
     },
     methods: {
@@ -29,7 +25,6 @@
         if (!this.isActive) {
           this.$router.push(this.path)
         }
-
       }
     }
   }

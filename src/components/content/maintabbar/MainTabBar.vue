@@ -1,37 +1,25 @@
 <template>
   <div id="main-tab-bar">
-    <h1>blackblog</h1>
+    <h1>BlackBlog</h1>
     <Tab-bar>
-      <Tab-bar-item path="/home">
+      <Tab-bar-item path="/">
         <template v-slot:function>首页</template>
       </Tab-bar-item>
       <Tab-bar-item path="/category">
-        <template v-slot:function>分类</template>
+        <template v-slot:function>专栏</template>
         <template v-slot:spread>
           <em></em>
           <c-nav-menu></c-nav-menu>
         </template>
       </Tab-bar-item>
-      <Tab-bar-item path="/update">
+      <Tab-bar-item path="/dynamic">
         <template v-slot:function>动态</template>
-        <template v-slot:spread></template>
-      </Tab-bar-item>
-      <Tab-bar-item path="/picture">
-        <template v-slot:function>图片</template>
-        <template v-slot:spread></template>
-      </Tab-bar-item>
-      <Tab-bar-item path="/audio">
-        <template v-slot:function>音频</template>
-        <template v-slot:spread></template>
-      </Tab-bar-item>
-      <Tab-bar-item path="/video">
-        <template v-slot:function>视频</template>
         <template v-slot:spread></template>
       </Tab-bar-item>
     </Tab-bar>
     <div class="search">
       <input type="search" placeholder="输入关键字搜索...">
-      <button type="button"><span class="iconfont">&#xe61c;</span></button>
+      <span class="iconfont" @click="search">&#xe61c;</span>
     </div>
     <login-state></login-state>
   </div>
@@ -52,6 +40,9 @@
       TabBarItem,
       CNavMenu,
       LoginState
+    },
+    methods: {
+      search() {}
     }
   }
 
@@ -66,13 +57,15 @@
     background-color: #3f4257;
     font-size: 17px;
     line-height: 60px;
+    z-index: 10;
   }
 
   h1 {
     position: absolute;
     top: 0;
     left: 20px;
-    font-size: 20px;
+    font-size: 25px;
+    color: #fff;
     font-weight: 700;
   }
 
@@ -99,45 +92,40 @@
   .search {
     position: absolute;
     top: 0;
-    left: 700px;
-  }
-
-  input,
-  button {
-    height: 36px;
-    background-color: #f0f0f0;
-    line-height: 36px;
-    font-size: 14px;
-    vertical-align: middle;
+    left: 500px;
   }
 
   input[type="search"] {
-    width: 150px;
+    width: 190px;
+    height: 36px;
     padding-left: 18px;
-    border-radius: 18px 0 0 18px;
+    line-height: 36px;
+    font-size: 14px;
+    vertical-align: middle;
+    border-radius: 18px;
     box-sizing: border-box;
     transition: width .4s;
+  }
+
+  .search span {
+    position: absolute;
+    top: 15px;
+    right: 5px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    line-height: 30px;
+    text-align: center;
+    cursor: pointer;
   }
 
   input[type="search"]:focus {
     width: 250px;
   }
 
-  button {
-    width: 35px;
-    border-radius: 0 18px 18px 0;
-  }
-
-  button span {
-    float: left;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    line-height: 30px;
-  }
-
-  input[type="search"]:focus + button span {
+  input[type="search"]:focus + span {
     background-color: #969696;
+    color: #fff;
   }
 
 </style>

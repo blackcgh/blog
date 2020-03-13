@@ -5,15 +5,16 @@ export default function axios(config) {
     const instance = originAxios.create({
       baseURL: 'http://localhost/api',
       headers:{'Content-Type':'application/json'},
+      withCredentials: true,
       timeout: 5000
     })
 
-    instance.interceptors.request.use(config => {
-      return config;
-    }, err => {
-      return err;
+    // instance.interceptors.request.use(config => {
+    //   return config;
+    // }, err => {
+    //   return err;
 
-    })
+    // })
 
     instance.interceptors.response.use(res => {
       return res.data;

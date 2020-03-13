@@ -1,21 +1,22 @@
 <template>
   <div id="home" class="clearfix">
     <home-content></home-content>
-    <aside-content></aside-content>
+    <home-aside></home-aside>
   </div>
 </template>
 
 <script>
   import HomeContent from './childcomps/HomeContent'
-  import AsideContent from 'components/content/maincontent/AsideContent'
+  import HomeAside from './childcomps/HomeAside'
 
   export default {
     name: 'Home',
     components: {
       HomeContent,
-      AsideContent,
+      HomeAside
     },
     created() {
+      window.scrollTo(0, 0);
     }
   }
 

@@ -1,12 +1,15 @@
 <template>
   <div id="category">
-    分类
+    专栏
   </div>
 </template>
 
 <script>
   export default {
     name: 'Category',
+    created() {
+      window.scrollTo(0, 0);
+    }
   }
 
 </script>

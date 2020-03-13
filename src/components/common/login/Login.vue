@@ -1,11 +1,8 @@
 <template>
   <div id="login">
-    <input type="text" placeholder="用户名" v-model="username">
-    <br />
-    <input type="password" placeholder="密码" v-model="password">
-    <br />
+    <input type="text" placeholder="请输入用户名" v-model="data.username">
+    <input type="password" placeholder="请输入密码" v-model="data.password">
     <input type="checkbox" id="remember"><label for="remember">记住我</label>
-    <br />
     <button @click.prevent="btnLogin">登录</button>
   </div>
 </template>
@@ -17,25 +14,24 @@
     name: 'Login',
     data() {
       return {
-        username: '',
-        password: ''
+        data: {
+          username: '',
+          password: ''
+        }
       }
     },
     methods: {
       btnLogin() {
-        const data = {};
-        data.username = this.username;
-        data.password = this.password;
-        login(data).then(result => {
-          if(result.errno === 0) {
-            this.$router.replace('/home');
-            this.$store.commit('showState');
-            this.$store.commit('loginState', this.username);
-          } else if(result.errno === -1) {
-            alert('登录失败！')
+        login(this.data).then(result => {
+          if (result.errno === 0) {
+            this.$router.replace('/');
+            this.$store.commit('show');
+            this.$store.commit('login', this.data.username);
+            this.$store.commit('saveId', result.data.id)
+          } else if (result.errno === -1) {
+            alert('登录失败')
           } else {
-            alert('其他错误');
-
+            alert('错误');
           }
         })
       }
@@ -47,22 +43,17 @@
 <style scoped>
   input[type=text],
   input[type=password] {
-    width: 300px;
-    height: 50px;
-    padding: 4px 12px 4px 35px;
-    border: 1px solid #c8c8c8;
+    width: 330px;
+    height: 40px;
+    padding-left: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #c6d8f2;
     font-size: 14px;
     box-sizing: border-box;
-    border-radius: 0 0 4px 4px;
   }
 
-  input[type=text] {
-    border-bottom: 0;
-    border-radius: 4px 4px 0 0;
-  }
-
-  input[type=checkbox] {
-    margin: 20px 5px 20px -233px;
+  input:focus {
+    border-color: #6da4f1;
   }
 
   label {
@@ -71,8 +62,9 @@
   }
 
   button {
-    width: 300px;
+    width: 330px;
     height: 43px;
+    margin-top: 30px;
     background-color: #3194d0;
     color: #fff;
     font-size: 18px;

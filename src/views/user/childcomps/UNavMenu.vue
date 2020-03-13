@@ -10,7 +10,7 @@
       <nav-menu-item>
         <span class="iconfont">&#xe68f;</span>问题反馈
       </nav-menu-item>
-      <nav-menu-item>
+      <nav-menu-item path="/" :network="true">
         <span class="iconfont">&#xe61e;</span>退出
       </nav-menu-item>
     </nav-menu>

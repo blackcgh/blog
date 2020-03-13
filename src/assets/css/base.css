@@ -14,6 +14,7 @@ html {
 body {
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   user-select: none;
+  -webkit-user-select: none;
   /* 禁止用户鼠标在页面上选中文字/图片等 */
   -webkit-tap-highlight-color: transparent;
   /* webkit是苹果浏览器引擎，tap点击，highlight背景高亮，color颜色，颜色用数值调节 */
@@ -48,11 +49,12 @@ img {
 fieldset,
 img,
 input,
+textarea,
 button {
   border: none;
   padding: 0;
   margin: 0;
-  outline-style: none;
+  /* outline-style: none; */
 }
 
 s,
@@ -210,7 +212,7 @@ a:focus,
 /*公共类*/
 .w {
   /*版心 提取 */
-  width: 1032px;
+  width: 1033px;
   margin: 0 auto;
 }
 
