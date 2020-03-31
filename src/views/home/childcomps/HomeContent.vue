@@ -48,26 +48,36 @@
       Recommend
     },
     created() {
-      this.$store.commit('increment'); // 不携带flag
+      // 显示加载组件
+      this.$load.show();
+
+      // 不携带flag
+      this.$store.commit('increment');
       getAll(this.$store.state.blogCount).then(result => {
         if(result.data.flag) {
           this.isEnd = true;
         }
         if(result.data.data) {
-          this.blogList.push(...(result.data.data.reverse())); // 数据反转、解构，再追加给blogList
+          // 数据反转、解构，再追加给blogList
+          this.blogList.push(...(result.data.data.reverse()));
         }
+        // 隐藏加载组件
+        this.$load.hidden();
       })
     },
     methods: {
       showMore() {
-        this.$store.commit('increment', true); // 携带flag
+        this.$load.show();
+
+        // 携带flag
+        this.$store.commit('increment', true);
         getAll(this.$store.state.blogCount).then(result => {
           if(result.data.flag) {
             this.isEnd = true;
           }
-          if(result.data.data) {
-            this.blogList.push(...(result.data.data.reverse())); // 数据反转、解构，再追加给blogList
-          }
+          this.blogList.push(...(result.data.data.reverse()));
+
+          this.$load.hidden();
         })
       }
     }

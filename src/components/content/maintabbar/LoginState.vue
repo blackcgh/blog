@@ -1,27 +1,37 @@
 <template>
   <div class="ls">
-    <div id="login" @click="login" v-if="!$store.state.isShow">登录 <i>|</i> 注册</div>
-    <div id="login-state" v-else>
+    <div v-if="!$store.state.status">
+      <span id="login" @click="login">登录</span>
+      <span id="register" @click="register">注册</span>
+    </div>
+    <div id="myself" v-else>
       <span class="avatar"></span>
       <span class="uname">{{$store.state.username}}</span>
-      <u-nav-menu></u-nav-menu>
+      <main-nav-menu></main-nav-menu>
     </div>
   </div>
 </template>
 
 <script>
-  import UNavMenu from 'views/user/childcomps/UNavMenu'
+  import MainNavMenu from 'components/content/user/MainNavMenu'
 
   export default {
     name: 'LoginState',
     components: {
-      UNavMenu
+      MainNavMenu
     },
     methods: {
       login() {
-        this.$router.push('/user');
+        if (this.$route.path !== '/login') {
+          this.$router.push('/login');
+        }
+      },
+      register() {
+        if (this.$route.path !== '/register') {
+          this.$router.push('/register');
+        }
       }
-    },
+    }
   }
 
 </script>
@@ -32,7 +42,7 @@
     top: 12px;
     right: 160px;
     bottom: 0;
-    width: 100px;
+    width: 128px;
     line-height: 36px;
     text-align: center;
     font-weight: 700;
@@ -41,29 +51,33 @@
 
   #login {
     height: 36px;
-    border: 1px solid #f1563b;
+    margin-right: 20px;
     border-radius: 18px;
-    color: #f1563b;
-    box-sizing: border-box;
-  }
-
-  #login:hover {
-    background-color: #f1563b;
     color: #fff;
   }
 
-  #login i {
-    position: relative;
-    top: -2px;
-    left: 0;
+  #login:hover {
+    color: #00a1d6;
   }
 
-  #login-state {
+  #register {
+    height: 36px;
+    padding: 5px 20px;
+    border-radius: 18px;
+    color: #fff;
+    background-color: #00a1d6;
+  }
+
+  #register:hover {
+    background-color: #0490be;
+  }
+
+  #myself {
     height: 36px;
     color: #fff;
   }
 
-  #login-state .avatar {
+  .avatar {
     display: inline-block;
     width: 36px;
     height: 36px;
@@ -72,20 +86,20 @@
     vertical-align: middle;
   }
 
-  #login-state .uname {
+  .uname {
     padding: 0 10px;
   }
 
-  #login-state::after {
+  #myself::after {
     content: '';
     position: absolute;
     top: 15px;
-    right: 5px;
+    right: 15px;
     border: 5px solid transparent;
     border-top-color: #fff;
   }
 
-  .ls:hover .u-nav-menu {
+  .ls:hover .main-nav-menu {
     display: block;
   }
 

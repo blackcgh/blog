@@ -1,14 +1,16 @@
 <template>
   <div class="comment">
+    <!-- 评论条数 -->
     <div class="c-count">{{commentNum}} 评论</div>
+    <!-- 编辑、发表评论 -->
     <div class="send clearfix">
       <img src="" alt="">
       <textarea placeholder="评论一下..." v-model="comment.content"></textarea>
       <span @click="submit">发表评论</span>
     </div>
-
+    <!-- 评论项 -->
     <slot></slot>
-
+    <!-- 页按钮 -->
     <div v-if="isShow">
       <div class="line"></div>
       <div class="page">
@@ -30,12 +32,11 @@
     name: 'Comment',
     data() {
       return {
-        num: 5,
-        comment: {
+        num: 5,     // 页按钮个数
+        comment: {  // 添加评论信息
           content: '',
           createTime: new Date(),
           likeNum: 0,
-          // grade: 0,
           parentId: this.$route.params.bid,
           uid: this.$store.state.id,
           bid: this.$route.params.bid
@@ -43,27 +44,32 @@
       }
     },
     props: {
-      isShow: false,
-      commentNum: 0
+      isShow: false,  // 是否显示页按钮
+      commentNum: 0   // 显示当前评论个数
     },
     methods: {
+      // 发表评论
       submit() {
         if (this.$store.state.id) {
+          this.$load.show();
           newComment(this.comment).then(result => {
+            this.$load.hidden();
+
             if (result.errno === 0) {
-              alert('发表成功');
               result.data.userInfo = [{
                 username: this.$store.state.username
               }]
               result.data.replies = [];
               this.$emit('addComment', result.data);
               this.comment.content = '';
+
+              this.$tip.show('#f0f9eb', '发表成功', 0, '#91c287');
             } else {
-              alert('error');
+              this.$tip.show('#fef0f0', '发表失败', 3, '#f56c6c');
             }
           })
         } else {
-          alert('只有登录才能发表评论哦')
+          this.$tip.show('#edf2fc', '只有登录才能发表评论哦', 1, '#909399');
         }
       }
     }

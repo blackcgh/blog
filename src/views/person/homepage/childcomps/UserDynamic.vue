@@ -1,12 +1,10 @@
 <template>
-<div id="setting">
-  设置
-</div>
+<div id="user-dynamic">用户动态</div>
 </template>
 
 <script>
 export default {
-  name: 'Setting',
+  name: 'UserDynamic',
 }
 </script>
 

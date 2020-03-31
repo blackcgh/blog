@@ -16,7 +16,7 @@ function getRainbow(el) {
     r = Math.floor(Math.random() * 256);
     g = Math.floor(Math.random() * 256);
     b = Math.floor(Math.random() * 256);
-  } while (r < 210 && g < 210 && b < 210)
+  } while (Math.abs(r - g) > 20 && Math.abs(r - b) > 20 && Math.abs(g - b) > 20)
   const color = 'rgb(' + r + ',' + g + ',' + b + ')';
   el.style.backgroundColor = color;
 }

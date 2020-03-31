@@ -35,7 +35,7 @@
       <ul>
         <li v-for="item of blogList" :key="item">{{item}}</li>
       </ul>
-      <div class="d-more">查看更多 ></div>
+      <div class="d-more">查看更多 >></div>
     </div>
   </div>
 </template>
@@ -91,7 +91,7 @@
           this.list = result.data.list.reverse();
           this.readCount = result.data.readCount;
         } else {
-          alert('获取失败');
+          this.$tip.show('#fef0f0', '获取其他博客失败', 3, '#f56c6c');
         }
       })
     },

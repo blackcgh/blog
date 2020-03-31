@@ -2,6 +2,7 @@
   <div id="home" class="clearfix">
     <home-content></home-content>
     <home-aside></home-aside>
+    <router-view></router-view>
   </div>
 </template>
 

@@ -33,7 +33,7 @@
       </template>
     </aside-content>
     <aside-content>
-      友情链接
+      公告
       <template v-slot:content>
         <ul>
           <li v-for="item of link" :key="item">{{item}}</li>

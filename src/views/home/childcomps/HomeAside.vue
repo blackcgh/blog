@@ -1,5 +1,6 @@
 <template>
   <div class="home-aside">
+    <!-- 排行榜 -->
     <aside-content>
       热度排行榜
       <template v-slot:content>
@@ -8,6 +9,8 @@
         </ul>
       </template>
     </aside-content>
+
+    <!-- 推荐作者 -->
     <aside-content>
       作者推荐
       <template v-slot:content>
@@ -16,6 +19,8 @@
         </ul>
       </template>
     </aside-content>
+
+    <!-- 标签云 -->
     <aside-content>
       标签云
       <template v-slot:content>
@@ -25,8 +30,10 @@
         <div class="tag-cloud-tip" v-else>标签云还是空的呢~</div>
       </template>
     </aside-content>
+
+    <!-- 公告 -->
     <aside-content>
-      友情链接
+      公告
       <template v-slot:content>
         <ul>
           <li v-for="item of links" :key="item">{{item}}</li>

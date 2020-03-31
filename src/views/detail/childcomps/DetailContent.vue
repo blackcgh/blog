@@ -37,17 +37,17 @@
     name: 'DetailContent',
     data() {
       return {
-        selected: false
+        selected: false // 是否已经点过赞
       }
     },
     props: {
-      blog: {
+      blog: {           // 博客信息
         type: Object,
         default () {
           return {}
         }
       },
-      list: {
+      list: {           // 存放多条评论信息
         type: Array,
         default () {
           return []
@@ -55,7 +55,7 @@
       }
     },
     computed: {
-      format() {
+      format() {        // 格式化时间，精确到分钟
         return formatTime(this.blog.createTime, true);
       }
     },
@@ -64,7 +64,7 @@
       CommentItem
     },
     methods: {
-      like() {
+      like() {          // 点赞
         if (this.$store.state.id) {
           this.selected = !this.selected;
           if (this.selected) {
@@ -76,21 +76,28 @@
           likeBlog(this.blog['_id'], this.blog.likeNum, this.$store.state.username)
           .then(result => {
             if (result.errno === -1) {
-              alert('点赞失败');
+              this.$tip.show('#fef0f0', '点赞失败', 3, '#f56c6c');
               this.selected = false;
               this.blog.likeNum--;
             }
           })
         } else {
-          alert('只有登录才能点赞哦')
+          this.$tip.show('#edf2fc', '只有登录才能点赞哦', 1, '#909399');
         }
       },
-      collect() {},
-      addComment(comment) {
+      collect() {       // 收藏
+        if(this.$store.state.id) {
+
+        } else {
+          this.$tip.show('#edf2fc', '只有登录才能收藏哦', 1, '#909399');
+        }
+      },
+      addComment(comment) { // 发表评论
         this.list.unshift(comment);
       }
     },
     created() {
+      // 验证是否对该博客点过赞
       validateBlog(this.blog['_id'], this.$store.state.username).then(result => {
         if(result.errno === 0) {
           this.selected = true;

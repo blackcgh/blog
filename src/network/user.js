@@ -23,8 +23,16 @@ function logout() {
   })
 }
 
+function validate() {
+  return axios({
+    method: 'get',
+    url: '/user/validate'
+  })
+}
+
 export {
   register,
   login,
-  logout
+  logout,
+  validate
 }

@@ -2,11 +2,16 @@
   <div id="update-blog">
     <div>
       <div class="context">
+        <!-- 标题 -->
         <textarea id="update-title" placeholder="博客标题（30字以内）" v-model="blog.title"></textarea>
+
+        <!-- 正文 -->
         <div id="update-content" contenteditable="true" @input="input">{{blog.content}}</div>
 
+        <!-- 编辑器 -->
         <div class="editor"></div>
 
+        <!-- 专栏 -->
         <div class="category clearfix">
           <div><em>请选择专栏</em>（若不选择，则默认进入生活专栏）：</div>
           <span v-for="(item,index) of categoryName" :key="item" :class="{selected: currentIndex===index}"
@@ -14,12 +19,15 @@
             {{item}}
           </span>
         </div>
+
+        <!-- 标签 -->
         <div class="tag">
           <div><em>请添加标签</em>（可选，还可以添加7个标签）：</div>
+          <!-- 横向显示 -->
           <ul class="clearfix">
             <li v-for="(item,index) of tag" :key="index">
               {{item}}
-              <span @click="remove(index)"><b class="iconfont">&#xe63d;</b></span>
+              <span class="del-icon" @click="remove(index)">+</span>
             </li>
           </ul>
           <input type="text" maxlength="20" @keyup.enter="push">
@@ -67,23 +75,36 @@
         e.target.value = '';
       },
       update() {
-        const blogs = {}
-        blogs['_id'] = this.$route.params.bid;
-        blogs.title = this.blog.title;
-        blogs.content = this.blog.content;
-        blogs.category = this.blog.category;
-        updateBlog(blogs,this.tag).then(result => {
+        this.$load.show();
+
+        const blogs = {
+          '_id': this.$route.params.bid,
+          title: this.blog.title,
+          content: this.blog.content,
+          category: this.blog.category,
+        }
+        updateBlog(blogs, this.tag).then(result => {
+          this.$load.hidden();
+
           if (result.errno === 0) {
             this.$router.replace('/' + this.$store.state.id + '/blog');
+
+            this.$tip.show('#f0f9eb', '修改成功', 0, '#91c287');
           } else {
             alert('error');
             this.$router.replace('/' + this.$store.state.id + '/blog');
+
+            this.$tip.show('#fef0f0', '修改失败', 3, '#f56c6c');
           }
         })
       }
     },
     created() {
+      this.$load.show();
+
       getDetail(this.$route.params.bid).then(result => {
+        this.$load.hidden();
+
         if(result.errno === 0) {
           this.blog = result.data[0];
           this.currentIndex = this.categoryName.indexOf(this.blog.category);
@@ -91,7 +112,9 @@
             this.tag.push(item.content);
           });
         } else {
-          alert('error');
+          this.$tip.show('#fef0f0', '获取内容发生错误', 3, '#f56c6c');
+
+          this.$router.back();
         }
       })
     }
@@ -182,35 +205,29 @@
   }
 
   .tag li {
-    float: left;
     position: relative;
-    height: 30px;
-    padding: 0 15px;
+    float: left;
+    padding: 0 5px 5px 10px;
     margin-right: 20px;
     background-color: #00a1d6;
-    text-align: cneter;
+    text-align: center;
     color: #fff;
-    font-size: 12px;
-    line-height: 30px;
+    font-size: 14px;
     border-radius: 15px;
   }
 
   .tag li span {
-    position: absolute;
-    top: -5px;
-    right: -5px;
+    display: inline-block;
     width: 15px;
     height: 15px;
+    font-size: 20px;
+    color: #fff;
     border-radius: 50%;
-    background-color: #969696;
+    transform: translateY(3px) rotate(45deg);
   }
 
-  .tag li b {
-    position: absolute;
-    top: -7px;
-    left: 0;
-    color: #fff;
-    font-size: 15px;
+  .tag li span:hover {
+    color: #000;
   }
 
   .category em,

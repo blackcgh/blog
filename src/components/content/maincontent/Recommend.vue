@@ -122,14 +122,16 @@
   }
 
   .clue span {
-    margin-right: 20px;
+    display: inline-block;
+    min-width: 60px;
+    vertical-align: middle
   }
 
   .clue span::before {
     content: '';
     display: inline-block;
     position: relative;
-    top: -3px;
+    top: -2px;
     left: 0;
     width: 24px;
     height: 24px;

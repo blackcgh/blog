@@ -5,9 +5,9 @@
     <!-- 多页面 -->
     <router-view class="w mt"></router-view>
     <!-- 用户菜单 -->
-    <user-menu :class="{showu: $store.state.isShow}"></user-menu>
+    <user-menu :class="{showu: $store.state.status}"></user-menu>
     <!-- 我的好友 -->
-    <friend :class="{showf: $store.state.isShow}"></friend>
+    <friend :class="{showf: $store.state.status}"></friend>
   </div>
 </template>
 
@@ -22,21 +22,20 @@
       MainTabBar,
       UserMenu,
       Friend
-    },
+    }
   }
 
 </script>
 
 <style>
   @import "./assets/css/base.css";
-  @import "./assets/css/iconfont.css";
 
   #app {
     position: relative;
-    width: 100%;
+    min-width: 100%;
     height: 100%;
     background-color: #ecf1f5;
-    overflow: auto;
+    overflow-y: auto;
   }
 
   .mt {

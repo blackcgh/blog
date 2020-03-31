@@ -36,6 +36,8 @@
       DetailAside
     },
     created() {
+      this.$load.show();
+
       getList(this.getBlog['_id']).then(data => {
         if (data.errno === 0) {
           data.data.forEach(item => {
@@ -51,6 +53,8 @@
             }
           });
           this.list = this.list.reverse();
+
+          this.$load.hidden();
         } else if (data.errno === -1) {
           alert('获取失败');
         }

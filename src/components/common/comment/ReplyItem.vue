@@ -88,38 +88,43 @@
           likeComment(this.reply['_id'], this.reply.likeNum, this.$store.state.username)
           .then(result => {
             if (result.errno === -1) {
-              alert('点赞失败');
+              this.$tip.show('#fef0f0', '点赞失败', 3, '#f56c6c');
               this.selected = false;
               this.reply.likeNum--;
             }
           })
         } else {
-          alert('只有登录才能点赞哦')
+          this.$tip.show('#edf2fc', '只有登录才能点赞哦', 1, '#909399');
         }
       },
       reponse() {
         if (this.$store.state.id) {
           this.$store.commit('modify', this.index);
         } else {
-          alert('只有登录才能回复别人哦')
+          this.$tip.show('#edf2fc', '只有登录才能回复别人哦', 1, '#909399');
         }
       },
       submit() {
+        this.$load.show();
+
         if (this.$store.state.id) {
           newComment(this.replyComment).then(result => {
+            this.$load.hidden();
+
             if (result.errno === 0) {
-              alert('发表成功');
               result.data.userInfo = [{
                 username: this.$store.state.username
               }]
               this.$emit('addReply', result.data);
               this.replyComment.content = '';
+
+              this.$tip.show('#f0f9eb', '发表成功', 0, '#91c287');
             } else {
-              alert('error');
+              this.$tip.show('#fef0f0', '发表失败', 3, '#f56c6c');
             }
           })
         } else {
-          alert('只有登录才能发表评论哦')
+          this.$tip.show('#edf2fc', '只有登录才能发表评论哦', 1, '#909399');
         }
       }
     },

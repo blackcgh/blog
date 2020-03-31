@@ -1,22 +1,22 @@
 <template>
   <div id="main-tab-bar">
     <h1>BlackBlog</h1>
-    <Tab-bar>
-      <Tab-bar-item path="/">
+    <tab-bar>
+      <tab-bar-item path="/">
         <template v-slot:function>首页</template>
-      </Tab-bar-item>
-      <Tab-bar-item path="/category">
+      </tab-bar-item>
+      <tab-bar-item path="/column">
         <template v-slot:function>专栏</template>
         <template v-slot:spread>
           <em></em>
           <c-nav-menu></c-nav-menu>
         </template>
-      </Tab-bar-item>
-      <Tab-bar-item path="/dynamic">
+      </tab-bar-item>
+      <tab-bar-item path="/dynamic">
         <template v-slot:function>动态</template>
         <template v-slot:spread></template>
-      </Tab-bar-item>
-    </Tab-bar>
+      </tab-bar-item>
+    </tab-bar>
     <div class="search">
       <input type="search" placeholder="输入关键字搜索...">
       <span class="iconfont" @click="search">&#xe61c;</span>
@@ -29,9 +29,11 @@
   import TabBar from 'components/common/tabbar/TabBar'
   import TabBarItem from 'components/common/tabbar/TabBarItem'
 
-  import CNavMenu from 'views/category/childcomps/CNavMenu'
+  import CNavMenu from 'views/column/childcomps/CNavMenu'
 
-    import LoginState from './LoginState'
+  import LoginState from './LoginState'
+
+  import { validate } from 'network/user'
 
   export default {
     name: 'MainTabBar',
@@ -43,6 +45,15 @@
     },
     methods: {
       search() {}
+    },
+    created() {
+      validate().then(result => {
+        if(result.errno === 0) {
+          this.$store.commit('show');
+          this.$store.commit('login', result.data.username);
+          this.$store.commit('updateId', result.data.id);
+        }
+      })
     }
   }
 
@@ -93,39 +104,31 @@
     position: absolute;
     top: 0;
     left: 500px;
+    margin-top: 12px;
+    line-height: 36px;
   }
 
   input[type="search"] {
-    width: 190px;
+    width: 250px;
     height: 36px;
-    padding-left: 18px;
-    line-height: 36px;
+    padding: 0 5px 0 20px;
     font-size: 14px;
-    vertical-align: middle;
-    border-radius: 18px;
     box-sizing: border-box;
-    transition: width .4s;
   }
 
   .search span {
-    position: absolute;
-    top: 15px;
-    right: 5px;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    line-height: 30px;
+    display: inline-block;
+    width: 48px;
+    height: 36px;
+    background-color: #eaedf2;
     text-align: center;
+    color: #222;
+    vertical-align: middle;
     cursor: pointer;
   }
 
-  input[type="search"]:focus {
-    width: 250px;
-  }
-
-  input[type="search"]:focus + span {
-    background-color: #969696;
-    color: #fff;
+  .search span:hover {
+    color: #00a1d6;
   }
 
 </style>

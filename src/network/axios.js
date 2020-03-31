@@ -23,7 +23,9 @@ export default function axios(config) {
     })
 
     instance(config).then(res => {
-      resolve(res);
+      setTimeout(() => {
+        resolve(res);
+      }, 1000);
     }).catch(err => {
       reject(err);
     })

@@ -11,15 +11,12 @@
             <span @click.stop="updateBlog(item['_id'])">修改</span>
             <span @click.stop="delBlog(index)">删除</span>
           </div>
-          <div class="mask" :class="{show: currentIndex === index}">
-            <div class="exit">
-              <div class="prompt" :class="{drop: currentIndex === index}">
-                <p>确定要删除博客《{{item.title}}》？</p>
-                <span @click.stop="cancel(index)">取消</span>
-                <span @click.stop="confirm(item['_id'])">确定</span>
-              </div>
-            </div>
-          </div>
+          <message :isShowMessage="currentIndex === index">
+            <i class="iconfont icon-wuuiconsuotanhao alarm"></i>
+            <b>此操作将永久删除博客《{{item.title}}》，是否继续？</b>
+            <template v-slot:first><em @click.stop="cancel(index)">取消</em></template>
+            <template v-slot:second><em @click.stop="confirm(item['_id'])">确定</em></template>
+          </message>
         </template>
       </recommend>
       <div class="more" v-if="num>3" @click="showMore" title="more">...</div>
@@ -30,6 +27,7 @@
 
 <script>
   import Recommend from 'components/content/maincontent/Recommend'
+  import Message from 'components/common/toast/Message'
 
   import { getList, delBlog } from 'network/blog'
 
@@ -41,7 +39,7 @@
         num: 0, // 博客数目
         isMore: false, // 是否显示更多
         currentIndex: -1, // 删除提示
-        deleteIndex: -1,
+        deleteIndex: -1
       }
     },
     props: {
@@ -58,7 +56,8 @@
       }
     },
     components: {
-      Recommend
+      Recommend,
+      Message
     },
     methods: {
       updateBlog(bid) {
@@ -71,15 +70,22 @@
         this.currentIndex = -1;
       },
       confirm(bid) {
+        this.$load.show();
+
         // 删除指定博客
         delBlog(bid).then(data => {
+          this.currentIndex = -1;
+
+          this.$load.hidden();
+
           if(data.errno === 0) {
             this.list.splice(this.currentIndex, 1);
-            this.currentIndex = -1;
+
+            this.$tip.show('#f0f9eb', '删除成功', 0, '#91c287');
           } else if(data.errno === -1) {
-            alert('删除失败');
+            this.$tip.show('#fef0f0', '删除失败', 3, '#f56c6c');
           } else {
-            alert('error');
+            this.$tip.show('#fef0f0', '删除发生错误', 3, '#f56c6c');
           }
         })
       },
@@ -88,18 +94,22 @@
       }
     },
     created() {
+      this.$load.show();
+
       // 获取自己的博客列表
       getList(this.$store.state.id).then(data => {
+        this.$load.hidden();
+
         if(data.errno === 0) {
           this.list = data.data.reverse();
-          this.$store.commit('saveTag', this.list);
+          this.$store.commit('updateTag', this.list);
         } else if(data.errno === -1) {
           alert('获取失败');
         }
       })
     },
     destroyed() {
-      this.$store.commit('saveTag');
+      this.$store.commit('updateTag');
     }
   }
 
@@ -132,64 +142,23 @@
     transform: scale(1.2, 1.2);
   }
 
-  .mask {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, .5);
-    z-index: -1;
-    transition: all .3s;
+  i {
+    position: relative;
+    top: 3px;
+    margin-right: 10px;
+    font-size: 20px;
   }
 
-  .exit {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 400px;
-    height: 150px;
-    overflow: hidden;
-    transform: translate(-50%, -50%);
-    border-radius: 5px;
+  b {
+    font-weight: normal;
+    font-size: 14px;
   }
 
-  .prompt {
-    position: absolute;
-    top: -150px;
-    left: 0;
+  em {
+    display: inline-block;
     width: 100%;
     height: 100%;
-    padding: 40px 20px;
-    background-color: #fff;
-    text-align: center;
-    box-sizing: border-box;
-    transition: all .3s;
-  }
-
-  .prompt p {
-    margin-bottom: 30px;
-    color: #999;
-  }
-
-  .prompt span {
-    display: inline-block;
-    width: 70px;
-    height: 30px;
-    line-height: 30px;
-    color: #999;
-    cursor: pointer;
-  }
-
-  .prompt span:last-child {
-    margin-left: 20px;
-    background-color: rgb(240, 94, 57);
-    color: #fff;
-    border-radius: 15px;
-  }
-
-  .prompt span:last-child:hover {
-    background-color: #f00;
+    font-size: 14px;
   }
 
   .more {
@@ -231,6 +200,8 @@
     right: 0;
   }
 
-
+  .alarm {
+    color: #ff9900;
+  }
 
 </style>

@@ -1,26 +1,33 @@
 <template>
   <div class="comment-item">
+    <!-- 用户头像 -->
     <img src="" alt="">
     <div>
+      <!-- 用户名 -->
       <h4>{{comment.userInfo[0].username}}</h4>
+      <!-- 评论内容 -->
       <p>{{comment.content}}</p>
       <div class="info">
+        <!-- 评论时间 -->
         <span>{{format}}</span>
+        <!-- 点赞数 -->
         <span>
           <em class="iconfont" :class="{isSelected: selected}" @click="like">&#xe601;</em>
           {{likeItem}}
         </span>
         <span><em class="iconfont">&#xe602;</em> 54</span>
+        <!-- 回复按钮 -->
         <span @click="reply">回复</span>
       </div>
-
+      <!-- 点击回复按钮，显示评论编辑框 -->
       <div class="send clearfix" v-if="show">
         <img src="" alt="">
         <textarea placeholder="说点什么..." v-model="replyComment.content"></textarea>
         <span @click="submit">发表评论</span>
       </div>
-
+      <!-- 回复盒子 -->
       <reply-box>
+        <!-- 回复项 -->
         <reply-item v-for="(item,index) of reverseReplies" :key="item['_id']" :reply="item" :commentId="comment['_id']" :index="'1'+index" @addReply="addReply">
         </reply-item>
       </reply-box>
@@ -39,8 +46,8 @@
     name: 'CommentItem',
     data() {
       return {
-        selected: false,
-        replyComment: {
+        selected: false,  // 记录是否已经点赞
+        replyComment: {   // 回复评论格式
           content: '',
           createTime: new Date(),
           likeNum: 0,
@@ -51,7 +58,7 @@
       }
     },
     props: {
-      comment: {
+      comment: {  // 要回复的评论
         type: Object,
         default () {
           return {}
@@ -94,38 +101,43 @@
           likeComment(this.comment['_id'], this.comment.likeNum, this.$store.state.username)
           .then(result => {
             if (result.errno === -1) {
-              alert('点赞失败');
+              this.$tip.show('#fef0f0', '点赞失败', 3, '#f56c6c');
               this.selected = false;
               this.comment.likeNum--;
             }
           })
         } else {
-          alert('只有登录才能点赞哦')
+          this.$tip.show('#edf2fc', '只有登录才能点赞哦', 1, '#909399');
         }
       },
       reply() {
         if (this.$store.state.id) {
           this.$store.commit('modify', this.index);
         } else {
-          alert('只有登录才能回复别人哦')
+          this.$tip.show('#edf2fc', '只有登录才能回复别人哦', 1, '#909399');
         }
       },
       submit() {
         if (this.$store.state.id) {
+          this.$load.show();
+
           newComment(this.replyComment).then(result => {
+            this.$load.hidden();
+
             if (result.errno === 0) {
-              alert('发表成功');
               result.data.userInfo = [{
                 username: this.$store.state.username
               }]
               this.comment.replies.push(result.data);
               this.replyComment.content = '';
+
+              this.$tip.show('#f0f9eb', '发表成功', 0, '#91c287');
             } else {
-              alert('error');
+              this.$tip.show('#fef0f0', '发表失败', 3, '#f56c6c');
             }
           })
         } else {
-          alert('只有登录才能发表评论哦');
+          this.$tip.show('#edf2fc', '只有登录才能发表评论哦', 1, '#909399');
         }
       },
       addReply(reply) {

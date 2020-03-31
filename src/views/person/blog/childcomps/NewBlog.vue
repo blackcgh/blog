@@ -21,7 +21,7 @@
           <ul class="clearfix">
             <li v-for="(item,index) of tag" :key="item">
               {{item}}
-              <span @click="remove(index)"><b class="iconfont">&#xe63d;</b></span>
+              <span class="del-icon" @click="remove(index)">+</span>
             </li>
           </ul>
           <input type="text" maxlength="20" @keyup.enter="push">
@@ -71,12 +71,19 @@
         e.target.value = '';
       },
       createBlog() {
+        this.$load.show();
+
         newBlog(this.blog, this.tag).then(result => {
+          this.$load.hidden();
+
           if (result.errno === 0) {
             this.$router.replace('/' + this.$store.state.id + '/blog');
+
+            this.$tip.show('#f0f9eb', '投稿成功', 0, '#91c287');
           } else {
-            alert('error');
             this.$router.replace('/' + this.$store.state.id + '/blog');
+
+            this.$tip.show('#fef0f0', '投稿失败', 3, '#f56c6c');
           }
         })
       }
@@ -168,35 +175,29 @@
   }
 
   .tag li {
-    float: left;
     position: relative;
-    height: 30px;
-    padding: 0 15px;
+    float: left;
+    padding: 0 5px 5px 10px;
     margin-right: 20px;
     background-color: #00a1d6;
-    text-align: cneter;
+    text-align: center;
     color: #fff;
-    font-size: 12px;
-    line-height: 30px;
+    font-size: 14px;
     border-radius: 15px;
   }
 
   .tag li span {
-    position: absolute;
-    top: -5px;
-    right: -5px;
+    display: inline-block;
     width: 15px;
     height: 15px;
+    font-size: 20px;
+    color: #fff;
     border-radius: 50%;
-    background-color: #969696;
+    transform: translateY(3px) rotate(45deg);
   }
 
-  .tag li b {
-    position: absolute;
-    top: -7px;
-    left: 0;
-    color: #fff;
-    font-size: 15px;
+  .tag li span:hover {
+    color: #000;
   }
 
   .category em,
