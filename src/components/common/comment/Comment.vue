@@ -2,16 +2,26 @@
   <div class="comment">
     <!-- 评论条数 -->
     <div class="c-count">{{commentNum}} 评论</div>
+
     <!-- 编辑、发表评论 -->
     <div class="send clearfix">
-      <img src="" alt="">
+      <img :src="$store.state.avatar">
       <textarea placeholder="评论一下..." v-model="comment.content"></textarea>
-      <span @click="submit">发表评论</span>
+      <span :class="{logout:getStatus}" @click="submit">发表评论</span>
+
+      <!-- 隔板，未登录时显示 -->
+      <div class="baffle" v-if="getStatus">
+        请先<b @click="login">登录</b>后发表评论 (・ω・)
+      </div>
     </div>
+
     <!-- 评论项 -->
     <slot></slot>
+
+    <div v-if="isShow" class="no">还没有评论呢~</div>
+
     <!-- 页按钮 -->
-    <div v-if="isShow">
+    <!-- <div>
       <div class="line"></div>
       <div class="page">
         <ul class="clearfix">
@@ -20,8 +30,7 @@
           <li>下一页</li>
         </ul>
       </div>
-    </div>
-    <div v-else class="no">还没有评论呢~</div>
+    </div> -->
   </div>
 </template>
 
@@ -32,44 +41,57 @@
     name: 'Comment',
     data() {
       return {
-        num: 5,     // 页按钮个数
-        comment: {  // 添加评论信息
+        num: 5, // 页按钮个数
+        comment: { // 添加评论信息
           content: '',
-          createTime: new Date(),
           likeNum: 0,
-          parentId: this.$route.params.bid,
-          uid: this.$store.state.id,
-          bid: this.$route.params.bid
+          // parentId: this.$route.params.bid, // 博客id
+          // // sender: this.$store.state.username,
+          // // avatar: this.$store.state.avatar,
+          // uid: this.$store.state.id,
+          // bid: this.$route.params.bid
         }
       }
     },
     props: {
-      isShow: false,  // 是否显示页按钮
-      commentNum: 0   // 显示当前评论个数
+      isShow: false, // 是否显示页按钮
+      commentNum: 0 // 显示当前评论条数
+    },
+    computed: {
+      // 是否登录
+      getStatus() {
+        return this.$store.state.id == ''
+      }
     },
     methods: {
+      // 登录
+      login() {
+        this.$store.commit('show', 'Login')
+      },
       // 发表评论
       submit() {
         if (this.$store.state.id) {
-          this.$load.show();
-          newComment(this.comment).then(result => {
-            this.$load.hidden();
-
-            if (result.errno === 0) {
-              result.data.userInfo = [{
-                username: this.$store.state.username
-              }]
-              result.data.replies = [];
-              this.$emit('addComment', result.data);
-              this.comment.content = '';
-
-              this.$tip.show('#f0f9eb', '发表成功', 0, '#91c287');
-            } else {
-              this.$tip.show('#fef0f0', '发表失败', 3, '#f56c6c');
-            }
-          })
+          if (this.comment.content) {
+            this.comment.parentId = this.$route.params.bid;
+            this.comment.createTime = new Date();
+            this.comment.uid = this.$store.state.id;
+            this.comment.bid = this.$route.params.bid;
+            newComment(this.comment).then(res => {
+              res.data.avatar = this.$store.state.avatar;
+              res.data.sender = this.$store.state.username;
+              if (res.errno === 0) {
+                this.$emit('addComment', res.data);
+                this.comment.content = '';
+                this.$tip.show('#f0f9eb', '发送成功', 0, '#91c287')
+              } else {
+                this.$tip.show('#fef0f0', '发送失败', 3, '#f56c6c')
+              }
+            })
+          } else {
+          this.$tip.show('#edf2fc', '评论内容不能为空', 1, '#909399')
+          }
         } else {
-          this.$tip.show('#edf2fc', '只有登录才能发表评论哦', 1, '#909399');
+          this.$tip.show('#edf2fc', '只有登录才能发表评论哦', 1, '#909399')
         }
       }
     }
@@ -80,7 +102,7 @@
 <style scoped>
   .comment {
     padding: 25px;
-    margin-bottom: 15px;
+    padding-top: 0;
     background-color: #fff;
     border-radius: 5px;
   }
@@ -92,6 +114,7 @@
   }
 
   .send {
+    position: relative;
     padding-bottom: 50px;
   }
 
@@ -101,7 +124,7 @@
     height: 48px;
     margin-top: 8px;
     border-radius: 50%;
-    background-color: aqua;
+    object-fit: cover;
   }
 
   .send textarea {
@@ -114,7 +137,12 @@
     background-color: #f4f5f7;
     font-size: 12px;
     color: #555;
+    border-radius: 4px;
     box-sizing: border-box;
+  }
+
+  .send textarea:hover {
+    border-color: #00a1d6;
   }
 
   .send textarea:focus {
@@ -133,10 +161,41 @@
     color: #fff;
     border-radius: 4px;
     box-sizing: border-box;
+    cursor: pointer;
   }
 
   .send span:hover {
     background-color: #0793b9;
+  }
+
+  .baffle {
+    position: absolute;
+    top: 0;
+    left: 78px;
+    width: 527px;
+    height: 64px;
+    background-color: #e5e9ef;
+    font-size: 12px;
+    line-height: 64px;
+    text-align: center;
+    color: #777;
+    border-radius: 4px;
+  }
+
+  .baffle b {
+    display: inline-block;
+    padding: 4px 9px;
+    margin: 0 3px;
+    color: #fff;
+    line-height: 12px;
+    font-weight: 400;
+    background-color: #00a1d6;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  b:hover {
+    background-color: #05b8f3;
   }
 
   .line {
@@ -166,9 +225,16 @@
   }
 
   .no {
+    margin-bottom: 20px;
     text-align: center;
     font-size: 14px;
     color: #969696;
+  }
+
+  .logout {
+    background-color: #e5e9ef!important;
+    color: #b8c0cc!important;
+    cursor: default!important;
   }
 
 </style>

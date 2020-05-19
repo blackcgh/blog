@@ -3,126 +3,135 @@ import VueRouter from 'vue-router'
 
 // 一级路由
 const Home = () => import('views/home/Home')
-const Column = () => import('views/column/Column')
 const Dynamic = () => import('views/dynamic/Dynamic')
 const Detail = () => import('views/detail/Detail')
-const Picture = () => import('views/picture/Picture')
-const Audio = () => import('views/audio/Audio')
-const Video = () => import('views/video/Video')
-const User = () => import('components/content/user/User')
-const Person = () => import('views/person/Person')
+const Search = () => import('views/search/Search')
+const Message = () => import('views/message/Message')
+const History = () => import('views/history/History')
+const User = () => import('views/user/User')
+const Profile = () => import('views/profile/Profile')
 
-// Person 二级路由
-const Profile = () => import('views/person/profile/Profile')
-const Homepage = () => import('views/person/homepage/Homepage')
-const Follow = () => import('views/person/follow/Follow')
-const Star = () => import('views/person/star/Star')
-const Message = () => import('views/person/message/Message')
-const Block = () => import('views/person/block/Block')
-const Set = () => import('views/person/set/Set')
-const Blog = () => import('views/person/blog/Blog')
+// Message 二级路由
+const ReplyMes = () => import('views/message/childcomps/ReplyMes')
+const LikeMes = () => import('views/message/childcomps/LikeMes')
+const SystemMes = () => import('views/message/childcomps/SystemMes')
+const WhisperMes = () => import('views/message/childcomps/WhisperMes')
+const ConfigMes = () => import('views/message/childcomps/ConfigMes')
+
+// LikeMes 三级路由
+const LikeDetail = () => import('views/message/childcomps/like/LikeDetail')
+
+// WhisperMes 三级路由
+const Chat = () => import('views/message/childcomps/whisper/Chat')
+
+// User 二级路由
+const Homepage = () => import('views/user/homepage/Homepage')
+const MyDynamic = () => import('views/user/dynamic/MyDynamic')
+const Blog = () => import('views/user/blog/Blog')
+const Follow = () => import('views/user/follow/Follow')
+const Star = () => import('views/user/star/Star')
+const Set = () => import('views/user/set/Set')
+
 
 // Blog 三级路由
-const BlogList = () => import('views/person//blog/childcomps/list/BlogList')
-const NewBlog = () => import('views/person/blog/childcomps/NewBlog')
-const UpdateBlog = () => import('views/person/blog/childcomps/UpdateBlog')
-
-// Homepage 三级路由
-// const UserPage = () => import('views/person/homepage/childcomps/UserPage')
-// const UserDynamic = () => import('views/person/homepage/childcomps/UserDynamic')
-// const UserBlog = () => import('views/person/homepage/childcomps/UserBlog')
-// const UserMessage = () => import('views/person/homepage/childcomps/UserMessage')
-// const UserFollow = () => import('views/person/homepage/childcomps/UserFollow')
-// const UserFan = () => import('views/person/homepage/childcomps/UserFan')
-// const UserStar = () => import('views/person/homepage/childcomps/UserStar')
-// const UserSetting = () => import('views/person/homepage/childcomps/UserSetting')
+const BlogList = () => import('views/user//blog/childcomps/BlogList')
+const NewBlog = () => import('views/user/blog/childcomps/NewBlog')
+const UpdateBlog = () => import('views/user/blog/childcomps/UpdateBlog')
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    component: Home,
-    children: [
-      {
-        path: 'login',
-        component: User
-      },
-      {
-        path: 'register',
-        component: User
-      }
-    ]
+    component: Home
   },
   {
-    path: '/column',
-    component: Column
+    path: '/column/:path',
+    component: Home
   },
   {
     path: '/dynamic',
     component: Dynamic
   },
   {
-    path: '/picture',
-    component: Picture
+    path: '/message',
+    component: Message,
+    children: [
+      {
+        path: 'reply',
+        component: ReplyMes
+      },
+      {
+        path: 'like',
+        component: LikeMes
+      },
+      {
+        path: 'system',
+        component: SystemMes
+      },
+      {
+        path: 'whisper',
+        component: WhisperMes,
+        children:[
+          {
+            path: ':uid',
+            component: Chat
+          }
+        ]
+      },
+      {
+        path: 'config',
+        component: ConfigMes
+      },
+      {
+        path: 'like/:cid',
+        component: LikeDetail
+      }
+    ]
   },
   {
-    path: '/audio',
-    component: Audio
+    path: '/history',
+    component: History
   },
   {
-    path: '/video',
-    component: Video
+    path: '/profile/:name',
+    component: Profile
   },
   {
     path: '/blog/:bid',
     component: Detail
   },
   {
+    path: '/search',
+    component: Search
+  },
+  {
     path: '/:userId',
-    component: Person,
+    component: User,
     children: [
-      {
-        path: '',
-        component: Profile
-      },
       {
         path: 'homepage',
         component: Homepage,
-        // children: [
-        //   {
-        //     path: '',
-        //     component: UserPage
-        //   },
-        //   {
-        //     path: 'dynamic',
-        //     component: UserDynamic
-        //   },
-        //   {
-        //     path: 'blog',
-        //     component: UserBlog
-        //   },
-        //   {
-        //     path: 'message',
-        //     component: UserMessage
-        //   },
-        //   {
-        //     path: 'follow',
-        //     component: UserFollow
-        //   },
-        //   {
-        //     path: 'fan',
-        //     component: UserFan
-        //   },
-        //   {
-        //     path: 'star',
-        //     component: UserStar
-        //   },
-        //   {
-        //     path: 'setting',
-        //     component: UserSetting
-        //   }
-        // ]
+      },
+      {
+        path: 'dynamic',
+        component: MyDynamic
+      },
+      {
+        path: 'follow',
+        component: Follow
+      },
+      {
+        path: 'fan',
+        component: Follow
+      },
+      {
+        path: 'star',
+        component: Star
+      },
+      {
+        path: 'set',
+        component: Set
       },
       {
         path: 'blog',
@@ -141,26 +150,6 @@ const routes = [
             component: UpdateBlog
           }
         ]
-      },
-      {
-        path: 'follow',
-        component: Follow
-      },
-      {
-        path: 'star',
-        component: Star
-      },
-      {
-        path: 'message',
-        component: Message
-      },
-      {
-        path: 'block',
-        component: Block
-      },
-      {
-        path: 'set',
-        component: Set
       }
     ]
   }

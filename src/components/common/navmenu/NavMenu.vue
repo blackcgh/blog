@@ -17,13 +17,13 @@
     box-shadow: 0 0 4px rgba(100, 100, 100, .6);
   }
 
-  .nav-menu::before {
+  /* .nav-menu::before {
     content: '';
     position: absolute;
     top: -16px;
-    left: 30px;
+    left: 31px;
     border: 8px solid transparent;
     border-bottom-color: #fff;
-  }
+  } */
 
 </style>

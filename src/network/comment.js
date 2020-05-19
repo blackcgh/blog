@@ -1,15 +1,5 @@
 import axios from './axios'
 
-function getList(bid) {
-  return axios({
-    method: 'get',
-    url: '/comment/list',
-    params: {
-      bid
-    }
-  })
-}
-
 function newComment(comment) {
   return axios({
     method: 'post',
@@ -18,32 +8,19 @@ function newComment(comment) {
   })
 }
 
-function likeComment(cid, likeNum, username) {
+function likeComment(cid, likeNum, likeId) {
   return axios({
     method: 'post',
     url: '/comment/like',
     data: {
       cid,
       likeNum,
-      username
-    }
-  })
-}
-
-function validateComment(cid, username) {
-  return axios({
-    method: 'get',
-    url: '/comment/validate',
-    params: {
-      cid,
-      username
+      likeId
     }
   })
 }
 
 export {
-  getList,
   newComment,
-  likeComment,
-  validateComment
+  likeComment
 }

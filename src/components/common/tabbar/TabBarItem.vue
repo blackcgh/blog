@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-bar-item fl" @click="click">
+  <div class="tab-bar-item fl" @click="itemClick">
     <div class="function" :class="{current: isActive}">
       <slot name="function"></slot>
     </div>
@@ -17,13 +17,14 @@
     },
     computed: {
       isActive() {
-        return this.path === this.$route.path;
+        if(this.path == '/column' && this.$route.path.indexOf('column') != -1) return true
+        return this.path == this.$route.path;
       }
     },
     methods: {
-      click() {
+      itemClick() {
         if (!this.isActive) {
-          this.$router.push(this.path)
+          if(this.path != '/column') this.$router.push(this.path)
         }
       }
     }
@@ -34,21 +35,19 @@
 <style scoped>
   .tab-bar-item {
     position: relative;
+    width: 85px;
+    height: 60px;
+    text-align: center;
     color: #fff;
     cursor: pointer;
   }
 
-  .function {
-    padding: 0 25px;
-  }
-
   .tab-bar-item:hover .function {
-    color: #f1563b;
-    /* background-color: #ecf1f5; */
+    color: #00a1d6;
   }
 
   .current {
-    color: #f1563b;
+    color: #00a1d6;
   }
 
 </style>

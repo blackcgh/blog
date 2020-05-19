@@ -1,15 +1,18 @@
 <template>
   <div id="login">
+    <!-- 用户名 -->
     <input
       type="text"
       placeholder="请输入用户名"
       v-focus
       v-model="data.username"
       @blur="userBlur"
-      :class="getUser">
+      :class="getUser" />
     <transition name="user-slide">
       <div class="user-error" v-show="isUser === -1">{{userMessage}}</div>
     </transition>
+
+    <!-- 密码 -->
     <input
       type="password"
       placeholder="请输入密码"
@@ -19,15 +22,15 @@
     <transition name="pwd-slide">
       <div class="pwd-error" v-show="isPwd === -1">{{pwdMessage}}</div>
     </transition>
+
+    <!-- 操作按钮 -->
     <button @click.prevent="btnLogin">登录</button>
     <span @click="reset">重置</span>
   </div>
 </template>
 
 <script>
-  import {
-    login
-  } from 'network/user'
+  import { login } from 'network/user'
 
   export default {
     name: 'Login',
@@ -93,30 +96,25 @@
         this.data.username = '';
         this.data.password = '';
       },
-      // 注册
+      // 登录
       btnLogin() {
         if (this.isUser === 1 && this.isPwd === 1) {
           this.$load.show();
-
-          login(this.data).then(result => {
+          login(this.data).then(res => {
             this.$load.hidden();
-
-            if (result.errno === 0) {
-              this.$tip.show('#f0f9eb', '欢迎你，' + this.data.username, 0, '#91c287');
-
-              this.$router.replace('/');
-              this.$store.commit('show');
-              this.$store.commit('login', this.data.username);
-              this.$store.commit('updateId', result.data.id);
-            } else if (result.errno === -1) {
-              this.$tip.show('#edf2fc', '用户名或密码错误', 1, '#909399');
+            if (res.errno === 0) {
+              this.$store.commit('hidden');
+              this.$tip.show('#f0f9eb','欢迎你，' + this.data.username, 0, '#91c287');
+              this.$store.commit('login', res.data)
+            } else if (res.errno === -1) {
+              this.$tip.show('#edf2fc', '用户名或密码错误', 1, '#909399')
             } else {
-              this.$tip.show('#fef0f0', '此次登录发生其他错误', 3, '#f56c6c');
+              this.$tip.show('#fef0f0', '此次登录发生其他错误', 3, '#f56c6c')
             }
           })
         } else {
           this.isUser === 0 ? this.isUser = -1 : '';
-          this.isPwd === 0 ? this.isPwd = -1 : '';
+          this.isPwd === 0 ? this.isPwd = -1 : ''
         }
       }
     }

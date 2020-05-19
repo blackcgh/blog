@@ -1,9 +1,7 @@
 // 省略字数
 function omitCount(val) {
-  let random = [100, 105, 110, 115, 120, 125, 130, 135, 140, 145];
-  let r = Math.floor(Math.random() * 10);
-  if (val.length > 120) {
-    return val.slice(0, random[r]) + '...';
+  if (val.length > 90) {
+    return val.slice(0, 90) + '...';
   } else {
     return val;
   }
@@ -43,8 +41,19 @@ function formatTime(date, confirm) {
   return year + '-' + month + '-' + day;
 }
 
+// 获取博客图片
+function getBlogImg(content) {
+  const index = content.indexOf('<img src="');
+  if(index != -1) {
+    return content.substr(index + 10, 72)
+  } else {
+    return 'http://localhost/images/blog/blogimg.webp'
+  }
+}
+
 export {
   omitCount,
   getRainbow,
-  formatTime
+  formatTime,
+  getBlogImg
 }

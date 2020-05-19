@@ -6,19 +6,23 @@
         <template v-slot:function>首页</template>
       </tab-bar-item>
       <tab-bar-item path="/column">
-        <template v-slot:function>专栏</template>
+        <template v-slot:function>
+          <div class="column" @mouseenter="enterColumn" @mouseleave="leaveColumn">
+            专栏
+            <column-label v-show="show_c" @shutColumn="shutColumn"></column-label>
+          </div>
+        </template>
         <template v-slot:spread>
           <em></em>
-          <c-nav-menu></c-nav-menu>
         </template>
       </tab-bar-item>
       <tab-bar-item path="/dynamic">
         <template v-slot:function>动态</template>
-        <template v-slot:spread></template>
+        <!-- <template v-slot:spread><b>48</b></template> -->
       </tab-bar-item>
     </tab-bar>
     <div class="search">
-      <input type="search" placeholder="输入关键字搜索...">
+      <input type="search" placeholder="输入关键字搜索..." v-model="keyword">
       <span class="iconfont" @click="search">&#xe61c;</span>
     </div>
     <login-state></login-state>
@@ -29,29 +33,58 @@
   import TabBar from 'components/common/tabbar/TabBar'
   import TabBarItem from 'components/common/tabbar/TabBarItem'
 
-  import CNavMenu from 'views/column/childcomps/CNavMenu'
-
+  import ColumnLabel from './childcomps/ColumnLabel'
   import LoginState from './LoginState'
 
   import { validate } from 'network/user'
 
   export default {
     name: 'MainTabBar',
+    data() {
+      return {
+        // 是否显示专栏分类
+        show_c: false,
+        // 搜索关键词
+        keyword: ''
+      }
+    },
     components: {
       TabBar,
       TabBarItem,
-      CNavMenu,
+      ColumnLabel,
       LoginState
     },
     methods: {
-      search() {}
+      // 鼠标进入专栏
+      enterColumn() {
+        this.show_c = true
+      },
+      // 鼠标离开专栏
+      leaveColumn() {
+        this.show_c = false
+      },
+      // 关闭专栏
+      shutColumn() {
+        this.show_c = false
+      },
+      // 关键字搜索
+      search() {
+        if(this.keyword != '') {
+          if(this.$route.query.keyword != this.keyword) {
+            this.$router.push({
+              path: '/search',
+              query: { keyword: this.keyword }
+            })
+          }
+        } else {
+          this.$tip.show('#edf2fc', '搜索内容不能为空', 1, '#909399')
+        }
+      }
     },
     created() {
-      validate().then(result => {
-        if(result.errno === 0) {
-          this.$store.commit('show');
-          this.$store.commit('login', result.data.username);
-          this.$store.commit('updateId', result.data.id);
+      validate().then(res => {
+        if(res.errno === 0) {
+          this.$store.commit('login', res.data);
         }
       })
     }
@@ -66,7 +99,7 @@
     left: 0;
     width: 100%;
     background-color: #3f4257;
-    font-size: 17px;
+    font-size: 16px;
     line-height: 60px;
     z-index: 10;
   }
@@ -100,6 +133,24 @@
     display: block;
   }
 
+  .column {
+    width: 100%;
+    height: 100%;
+  }
+
+  b {
+    position: absolute;
+    top: 7px;
+    right: 12px;
+    padding: 0 3px;
+    background-color: #FA5A57;
+    line-height: 16px;
+    font-size: 12px;
+    color: #fff;
+    text-align: center;
+    border-radius: 8px;
+  }
+
   .search {
     position: absolute;
     top: 0;
@@ -109,7 +160,7 @@
   }
 
   input[type="search"] {
-    width: 250px;
+    width: 280px;
     height: 36px;
     padding: 0 5px 0 20px;
     font-size: 14px;

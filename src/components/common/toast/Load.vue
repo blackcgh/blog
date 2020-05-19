@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div class="load" v-show="isShow">
+    <div class="load" :style="{backgroundColor:bgcolor}" v-show="isShow">
       <div>
         <div class="iconfont load-icon">&#xe674;</div>
         <div class="load-text">{{msg}}</div>
@@ -14,18 +14,26 @@
     name: 'Load',
     data() {
       return {
-        isShow: false,
-        msg: 'loading...'
+        // 控制是否显示加载图标
+        isShow: true,
+        // 加载文字
+        msg: 'loading...',
+        // 设置背景颜色
+        bgcolor: '#fd886e'
       }
     },
     methods: {
-      show(msg) {
+      show(msg, bgcolor) {
         if(msg) this.msg = msg;
+        if(bgcolor) this.bgcolor = bgcolor;
         this.isShow = true;
       },
       hidden() {
         this.isShow = false;
-        this.msg = 'loading...'
+        setTimeout(() => {
+          this.bgcolor = '#fd886e';
+          this.msg = 'loading...'
+        }, 10);
       }
     }
   }
@@ -39,7 +47,7 @@
     right: 0;
     width: 100vw;
     height: 100vh;
-    background-color: #fd886e;
+    /* background-color: #fd886e; */
     z-index: 2000;
   }
 

@@ -1,51 +1,57 @@
 import axios from './axios'
 
-function getAll(blogCount) {
+function getAll(page, category, flag, uid) {
   return axios({
-    method: 'get',
+    method: 'GET',
     url: '/blog/all',
-    params: { blogCount }
+    params: { page, category, flag, uid }
   })
 }
 
-function getBlogList(uid) {
+function getBlogList(uid, c) {
   return axios({
-    method: 'get',
+    method: 'GET',
     url: '/blog/bloglist',
-    params: { uid }
+    params: { uid, c }
   })
 }
 
 function getList(uid) {
   return axios({
-    method: 'get',
+    method: 'GET',
     url: '/blog/list',
     params: { uid }
   })
 }
 
-function getDetail(bid) {
+function getDetail(bid, uid) {
   return axios({
-    method: 'get',
+    method: 'GET',
     url: '/blog/detail',
-    params: { bid }
+    params: { bid, uid }
   })
 }
 
-function newBlog(blog, tag) {
+function newBlog(formData) {
   return axios({
-    method: 'post',
+    method: 'POST',
     url: '/blog/new',
-    data: {
-      blog,
-      tag
-    }
+    data: formData,
+    headers: {'Content-Type': 'multipart/form-data'}
+  })
+}
+
+function updateDetail(bid) {
+  return axios({
+    method: 'POST',
+    url: '/blog/detail',
+    data: { bid }
   })
 }
 
 function updateBlog(blog, tag) {
   return axios({
-    method: 'post',
+    method: 'POST',
     url: '/blog/update',
     data: {
       blog,
@@ -54,34 +60,92 @@ function updateBlog(blog, tag) {
   })
 }
 
-function delBlog(bid) {
+function delBlog(bid, uid) {
   return axios({
-    method: 'post',
+    method: 'POST',
     url: '/blog/del',
-    data: { bid }
+    data: { bid, uid }
   })
 }
 
-function likeBlog(bid, likeNum, username) {
+function likeBlog(bid, likeNum, likeId) {
   return axios({
-    method: 'post',
+    method: 'POST',
     url: '/blog/like',
     data: {
       bid,
       likeNum,
-      username
+      likeId
     }
   })
 }
 
-function validateBlog(bid, username) {
+function starBlog(bid, starNum, starId) {
   return axios({
-    method: 'get',
-    url: '/blog/validate',
-    params: {
+    method: 'POST',
+    url: '/blog/star',
+    data: {
       bid,
-      username
+      starNum,
+      starId
     }
+  })
+}
+
+function getStarBlog(bids) {
+  return axios({
+    method: 'GET',
+    url: '/blog/starblog',
+    params: { bids }
+  })
+}
+
+function delAllStar(bids, uid) {
+  return axios({
+    method: 'POST',
+    url: '/blog/allstar',
+    data: { bids, uid }
+  })
+}
+
+function getMyDynamic(uid) {
+  return axios({
+    method: 'GET',
+    url: '/blog/mydynamic',
+    params: { uid }
+  })
+}
+
+function getDynamic(uids) {
+  return axios({
+    method: 'GET',
+    url: '/blog/dynamic',
+    params: { uids }
+  })
+}
+
+function search(keyword) {
+  return axios({
+    method: 'GET',
+    url: '/search/list',
+    params: { keyword }
+  })
+}
+
+function getHistory(bids) {
+  return axios({
+    method: 'GET',
+    url: '/blog/historylist',
+    params: { bids }
+  })
+}
+
+function uploadBlogImg(formData) {
+  return axios({
+    method: 'POST',
+    url: '/blog/img',
+    data: formData,
+    headers: {'Content-Type': 'multipart/form-data'}
   })
 }
 
@@ -91,8 +155,16 @@ export {
   getList,
   getDetail,
   newBlog,
+  updateDetail,
   updateBlog,
   delBlog,
   likeBlog,
-  validateBlog
+  starBlog,
+  getStarBlog,
+  delAllStar,
+  getMyDynamic,
+  getDynamic,
+  search,
+  getHistory,
+  uploadBlogImg
 }

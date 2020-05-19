@@ -15,7 +15,6 @@
   .nav-menu-item {
     height: 50px;
     line-height: 50px;
-    padding-left: 15px;
     font-size: 14px;
     color: #6f7172;
   }
@@ -24,7 +23,7 @@
     background-color: #f0f2f3;
   }
 
-  .nav-menu-item div {
+  .nav-menu-item>div {
     height: 50px;
   }
 

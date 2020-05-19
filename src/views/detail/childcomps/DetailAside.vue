@@ -1,19 +1,30 @@
 <template>
-  <div class="detail-aside">
+  <div class="detail-aside" v-if="blog">
+    <!-- 用户介绍 -->
     <div class="host clearfix">
-      <img src="" alt="" title="看一下TA">
-      <h3>{{blog.author}}</h3>
+      <!-- 头像 -->
+      <img :src="getAvatar(blog.avatar)" title="看一下TA" @click="goPerson(blog.uid)">
+      <!-- 用户名 -->
+      <h3><span @click="goPerson(blog.uid)">{{blog.author}}</span></h3>
+      <!-- 其他信息 -->
       <div class="info">
-        粉丝：<span>7</span>
+        粉丝：<span>{{blog.fanNum}}</span>
         阅读：<span>{{readCount}}</span>
       </div>
-      <div class="follow-btn">关注</div>
+      <div class="follow-btn"
+           :class="{forbid:getFollow.length>2}"
+           v-if="show"
+           @click="addFollow">
+           {{getFollow}}
+      </div>
     </div>
-    <div class="blog-user">
+
+    <!-- 用户其他博客 -->
+    <div class="blog-user" v-if="blogList.user.length">
       <h4>TA的博客</h4>
       <ul>
-        <li v-for="(item,index) of list" :key="index">
-          <img src="" alt="">
+        <li v-for="(item,index) of blogList.user" :key="index" @click="goDetail(item['_id'])">
+          <img :src="getBlogImg(item.content)" alt="">
           <h5>{{item.title}}</h5>
           <div>
             <em>{{format(item.createTime)}}</em>
@@ -21,63 +32,108 @@
           </div>
         </li>
       </ul>
-      <div class="d-more" v-if="list.length>2">查看更多 >></div>
+      <div class="d-more" v-if="blogList.user.length>2" @click="goPerson(blog.uid)">
+        查看更多 >>
+      </div>
     </div>
+
+    <!-- 博客标签 -->
     <div class="blog-tag">
       <h4>相关标签</h4>
-      <ul class="clearfix" v-if="blog.tagInfo.length">
+      <ol class="clearfix" v-if="blog.tagInfo.length">
         <li v-for="item of blog.tagInfo" :key="item['_id']" v-rainbow>{{item.content}}</li>
-      </ul>
+      </ol>
       <div v-else>该博客没有定义标签~</div>
     </div>
-    <div class="blog-list">
-      <h4>博客推荐</h4>
+
+    <!-- 博客分类推荐 -->
+    <div class="blog-category"  v-if="blogList.category.length">
+      <h4>相关推荐</h4>
       <ul>
-        <li v-for="item of blogList" :key="item">{{item}}</li>
+        <li v-for="item of blogList.category"
+            :key="item['_id']"
+            @click="goDetail(item['_id'])">
+          <img :src="getBlogImg(item.content)" alt="">
+          <h5>{{item.title}}</h5>
+          <div>
+            <em>{{format(item.createTime)}}</em>
+            <em>{{item.readNum}}阅读</em>
+          </div>
+        </li>
       </ul>
-      <div class="d-more">查看更多 >></div>
+      <div class="d-more" v-if="blogList.category.length>2" @click="goHome">查看更多 >></div>
     </div>
   </div>
 </template>
 
 <script>
-  import AsideContent from 'components/content/asidecontent/AsideContent'
-
+  import { addFollow } from 'network/user'
   import { getBlogList } from 'network/blog'
-  import { formatTime } from 'common/utils'
+  import { formatTime, getBlogImg } from 'common/utils'
 
   export default {
     name: 'DetailAside',
     data() {
       return {
-        blogList: ['前端'],
-        list: [],
+        blogList: {
+          // 用户的其他博客
+          user: [],
+          // 分类相关推荐
+          category: []
+        },
+        // 阅读数
         readCount: 0
       }
     },
-    props: {
-      blog: {}
-    },
+    props: ['blog'],
     computed: {
+      // 格式化时间
       format() {
-        return formatTime;
+        return formatTime
+      },
+      getBlogImg() {
+        return getBlogImg
+      },
+      // 是否显示关注按钮，博客作者与登录用户相同就不显示
+      show() {
+        return this.blog.author != this.$store.state.username
+      },
+      // 关注按钮要显示的字和样式
+      getFollow() {
+        for(let i of this.$store.state.follow) {
+          for(let j of i.group) {
+            if(this.blog.uid == j) {
+              return '已关注'
+            }
+          }
+        }
+        return '关注'
+      },
+      getAvatar() {
+        return function(avatar) {
+          return avatar + '?t=' + Math.random()
+        }
       }
     },
-    components: {
-      AsideContent
-    },
     watch: {
-      list() {
+      blog() {
+        this.getBlogList()
+      },
+      // 观察侧边栏滚动
+      blogList() {
         this.$nextTick(function () {
           const detailAside = document.querySelector('.detail-aside');
-          const distance = detailAside.offsetHeight + 90 - 635;
+          const doh = detailAside.offsetHeight;
+          const dot = detailAside.offsetTop;
+          const wh = window.innerHeight;
+          let distance = doh + dot - wh;
           if (distance < 0) {
             distance = 0;
           }
           window.addEventListener('scroll', function () {
             if (window.pageYOffset > distance) {
               detailAside.classList.add('fixed');
-              detailAside.style.top = 90 - distance + 'px';
+              detailAside.style.top = dot - distance + 'px';
             } else {
               detailAside.classList.remove('fixed');
             }
@@ -85,16 +141,66 @@
         })
       }
     },
-    created() {
-      getBlogList(this.blog.uid).then(result => {
-        if (result.errno === 0) {
-          this.list = result.data.list.reverse();
-          this.readCount = result.data.readCount;
+    methods: {
+      // 前往博客详情页
+      goDetail(bid) {
+        this.$router.push('/blog/' + bid);
+      },
+      // 前往用户个人主页
+      goPerson(uid) {
+        this.$router.push('/' + uid + '/homepage');
+      },
+      // 前往首页
+      goHome() {
+        this.$router.push('/')
+      },
+      // 关注用户
+      addFollow() {
+        if(this.$store.state.id) {
+          const hid = this.blog.uid; // 对方id
+          if(this.$store.state.id != hid) {
+            if(this.getFollow.length < 3) {
+              const fid = this.$store.state.follow[0]['_id']; // 全部关注id
+              addFollow(this.$store.state.id, fid, hid).then(res => {
+                this.follow = '已关注';
+                this.$store.commit('addFollow', { hid, i: 0 });
+                this.$tip.show('#f0f9eb', '关注成功', 0, '#91c287')
+              })
+            }
+          } else {
+            this.$tip.show('#edf2fc', '不能关注自己', 1, '#909399')
+          }
         } else {
-          this.$tip.show('#fef0f0', '获取其他博客失败', 3, '#f56c6c');
+          this.$tip.show('#edf2fc', '请先登录', 1, '#909399')
         }
-      })
-    },
+      },
+      // 获取用户的其他博客
+      getBlogList() {
+        const { uid, category } = this.blog
+        getBlogList(uid, category).then(res => {
+          this.$load.hidden();
+          if (res.errno === 0) {
+            this.readCount = res.data.readCount;
+            this.blogList.user = this.filte(res.data.user, this.blog['_id']);
+            this.blogList.category = this.filte(res.data.category, this.blog['_id']);
+          } else {
+            this.$tip.show('#fef0f0', '获取该用户的其他博客失败', 3, '#f56c6c');
+          }
+        })
+      },
+      // 过滤与博客详情页相同的推荐博客
+      filte(list, bid) {
+        for(let i in list) {
+          if(list[i]['_id'] == bid) {
+            list.splice(i, 1)
+          }
+        }
+        if(list.length > 3) {
+          list.splice(list.length - 1)
+        }
+        return list
+      }
+    }
   }
 
 </script>
@@ -113,6 +219,10 @@
     border-radius: 5px;
   }
 
+  .detail-aside>div:last-child {
+    margin-bottom: 0;
+  }
+
   .host {
     position: relative;
   }
@@ -122,8 +232,9 @@
     width: 64px;
     height: 64px;
     margin-right: 15px;
-    background-color: skyblue;
     border-radius: 50%;
+    cursor: pointer;
+    object-fit: cover;
   }
 
   .host h3 {
@@ -133,7 +244,11 @@
     font-weight: 700;
   }
 
-  h3:hover {
+  .host h3 span {
+    cursor: pointer;
+  }
+
+  .host h3 span:hover {
     color: #00b5e5;
   }
 
@@ -152,16 +267,21 @@
   .follow-btn {
     width: 150px;
     height: 30px;
-    border: 1px solid #00b5e5;
     margin: 30px auto 0;
     background-color: #00b5e5;
     color: #fff;
     text-align: center;
     line-height: 32px;
+    cursor: pointer;
   }
 
   .follow-btn:hover {
-    background-color: #0793b9;
+    background-color: #03c3f8;
+  }
+
+  .forbid {
+    background: #e7e7e7 !important;
+    color: #999;
   }
 
   h4 {
@@ -175,7 +295,7 @@
     margin-bottom: 20px;
   }
 
-  .blog-tag li {
+  ol li {
     float: left;
     height: 20px;
     padding: 0 10px;
@@ -192,37 +312,41 @@
     text-align: center;
   }
 
-  .blog-user li,
-  .blog-list li {
+  ul li {
     margin-top: 15px;
     height: 50px;
+    cursor: pointer;
   }
 
-  .blog-user li h5 {
+  ul li h5 {
     width: 160px;
+    height: 20px;
+    padding: 5px 0;
+    margin-bottom: 6px;
     font-size: 12px;
     color: #222;
-    padding: 5px 0;
+    overflow: hidden;
   }
 
-  .blog-user li:hover h5 {
+  ul li:hover h5 {
     color: #00b5e5;
   }
 
-  .blog-user li div {
+  ul li div {
     font-size: 12px;
     color: #99a2aa;
   }
 
-  .blog-user li img {
+  ul li img {
     float: right;
     width: 68px;
     height: 50px;
-    background-color: #00b5e5;
     border-radius: 5px;
+    object-fit: cover;
   }
 
-  .blog-user em:first-child {
+  .blog-user em:first-child,
+  .blog-category em:first-child {
     margin-right: 10px;
   }
 

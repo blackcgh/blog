@@ -1,12 +1,12 @@
 import axios from './axios'
 
-function getAll() {
-  return axios({
-    method: 'get',
-    url: '/tag/all'
-  })
-}
+// function getAll() {
+//   return axios({
+//     method: 'get',
+//     url: '/tag/all'
+//   })
+// }
 
-export {
-  getAll
-}
+// export {
+//   getAll
+// }

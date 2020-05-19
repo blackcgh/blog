@@ -51,7 +51,7 @@
     padding: 7px 0;
     text-align: center;
     transition: all .5s;
-    z-index: 1002;
+    z-index: 2001;
   }
 
   span {

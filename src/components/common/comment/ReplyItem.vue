@@ -1,21 +1,33 @@
 <template>
   <div class="reply-item">
-    <img src="" alt="">
+    <!-- 头像 -->
+    <img :src="getAvatar(replyData.avatar)" @click="goPerson(replyData.uid)">
     <div>
-      <h4>{{reply.userInfo[0].username}} {{formatOther}}</h4>
-      <p>{{reply.content}}</p>
+      <!-- 用户名 -->
+      <h4>
+        <b @click="goPerson(replyData.uid)">{{replyData.sender}}</b>
+        <ins v-if="replyData.receiver">回复
+          <i @click="goPerson(replyData.rid)">@{{replyData.receiver}}</i>
+        </ins> ：
+      </h4>
+      <!-- 评论内容 -->
+      <p>{{replyData.content}}</p>
       <div class="info clearfix">
+        <!-- 评论时间 -->
         <span>{{format}}</span>
+        <!-- 点赞数 -->
         <span>
-          <em class="iconfont" :class="{isSelected: selected}" @click="like">&#xe601;</em>
-          {{likeItem}}
+          <em class="iconfont" :class="{like: isLike}" @click="like">&#xe601;</em>
+          {{likeNum}}
         </span>
         <span><em class="iconfont">&#xe602;</em> 54</span>
-        <span @click="reponse">回复</span>
+        <!-- 回复按钮 -->
+        <span @click="response">回复</span>
       </div>
+      <!-- 点击回复按钮，显示评论编辑框 -->
       <div class="send clearfix" v-if="show">
-        <img src="" alt="">
-        <textarea :placeholder="formatSend" v-model="replyComment.content"></textarea>
+        <img :src="$store.state.avatar">
+        <textarea :placeholder="showReply" v-model="replyComment.content"></textarea>
         <span @click="submit">发表评论</span>
       </div>
     </div>
@@ -23,22 +35,24 @@
 </template>
 
 <script>
-  import { newComment, likeComment, validateComment } from 'network/comment'
+  import { newComment, likeComment } from 'network/comment'
   import { formatTime } from 'common/utils'
 
   export default {
     name: 'ReplyItem',
     data() {
       return {
-        selected: false,
+        isLike: false,
+        replyData: this.reply,
         replyComment: {
           content: '',
-          createTime: new Date(),
           likeNum: 0,
-          parentId: this.commentId, // 上级id是评论id
-          other: this.reply.userInfo[0].username,
-          uid: this.$store.state.id,
-          bid: this.$route.params.bid
+          // parentId: this.commentId, // 上级id是评论id
+          // receiver: this.reply.sender,
+          // sender: this.$store.state.username,
+          // avatar: this.$store.state.avatar,
+          // uid: this.$store.state.id,
+          // bid: this.$route.params.bid
         }
       }
     },
@@ -50,121 +64,159 @@
         }
       },
       commentId: String,
-      index: String
+      mark: String
     },
     computed: {
+      // 格式化时间
       format() {
-        return formatTime(this.reply.createTime, true);
+        return formatTime(this.replyData.createTime, true);
       },
-      likeItem() {
-        if (this.reply.likeNum === 0) {
+      // 点赞数
+      likeNum() {
+        if (this.replyData.likeNum === 0) {
           return '';
         }
-        return this.reply.likeNum;
+        return this.replyData.likeNum;
       },
+      // 只显示一个编辑框
       show() {
-        return this.index === this.$store.state.currentIndex;
+        return this.mark === this.$store.state.currentMark;
       },
-      formatOther() {
-        if (!this.reply.other) {
-          return '：';
+      // 显示回复格式
+      showReply() {
+        return ' 回复 @' + this.replyData.sender + ':';
+      },
+      getAvatar() {
+        return function(avatar) {
+          return avatar + '?t=' + Math.random()
         }
-        return ' 回复 @' + this.reply.other + '：';
-      },
-      formatSend() {
-        return ' 回复 @' + this.reply.userInfo[0].username + ':';
+      }
+    },
+    watch: {
+      reply(val) {
+        this.replyData = val
       }
     },
     methods: {
+      // 前往该用户个人主页
+      goPerson(uid) {
+        this.$router.push('/' + uid + '/homepage')
+      },
+      // 点赞
       like() {
         if (this.$store.state.id) {
-          this.selected = !this.selected;
-          if (this.selected) {
-            this.reply.likeNum++;
+          this.isLike = !this.isLike;
+          if (this.isLike) {
+            this.replyData.likeNum++;
           } else {
-            this.reply.likeNum--;
+            this.replyData.likeNum--;
           }
-
-          likeComment(this.reply['_id'], this.reply.likeNum, this.$store.state.username)
-          .then(result => {
-            if (result.errno === -1) {
-              this.$tip.show('#fef0f0', '点赞失败', 3, '#f56c6c');
-              this.selected = false;
-              this.reply.likeNum--;
-            }
-          })
+          const { _id, likeNum } = this.replyData;
+          likeComment(_id, likeNum, this.$store.state.id).then(result => {
+              if (result.errno === -1) {
+                this.$tip.show('#fef0f0', '点赞失败', 3, '#f56c6c');
+                this.isLike = false;
+                this.replyData.likeNum--;
+              }
+            })
         } else {
           this.$tip.show('#edf2fc', '只有登录才能点赞哦', 1, '#909399');
         }
       },
-      reponse() {
+      // 点击回复按钮
+      response() {
         if (this.$store.state.id) {
-          this.$store.commit('modify', this.index);
+          this.$store.commit('updateMark', this.mark);
         } else {
           this.$tip.show('#edf2fc', '只有登录才能回复别人哦', 1, '#909399');
         }
       },
+      // 发表评论
       submit() {
-        this.$load.show();
-
         if (this.$store.state.id) {
-          newComment(this.replyComment).then(result => {
-            this.$load.hidden();
-
-            if (result.errno === 0) {
-              result.data.userInfo = [{
-                username: this.$store.state.username
-              }]
-              this.$emit('addReply', result.data);
-              this.replyComment.content = '';
-
-              this.$tip.show('#f0f9eb', '发表成功', 0, '#91c287');
-            } else {
-              this.$tip.show('#fef0f0', '发表失败', 3, '#f56c6c');
-            }
-          })
+          if (this.replyComment.content) {
+            this.replyComment.createTime = new Date();
+            this.replyComment.parentId = this.commentId;
+            this.replyComment.uid = this.$store.state.id;
+            this.replyComment.bid = this.$route.params.bid;
+            this.replyComment.rid = this.replyData.uid;
+            newComment(this.replyComment).then(res => {
+              res.data.avatar = this.$store.state.avatar;
+              res.data.sender = this.$store.state.username;
+              res.data.receiver = this.reply.sender;
+              if (res.errno === 0) {
+                this.$emit('addReply', res.data);
+                this.replyComment.content = '';
+                this.$store.commit('updateMark', '');
+                this.$tip.show('#f0f9eb', '发送成功', 0, '#91c287')
+              } else {
+                this.$tip.show('#fef0f0', '发送失败', 3, '#f56c6c')
+              }
+            })
+          } else {
+          this.$tip.show('#edf2fc', '评论内容不能为空', 1, '#909399')
+          }
         } else {
-          this.$tip.show('#edf2fc', '只有登录才能发表评论哦', 1, '#909399');
+          this.$tip.show('#edf2fc', '只有登录才能发表评论哦', 1, '#909399')
         }
       }
     },
     created() {
       // 不显示编辑框
-      this.$store.commit('modify', '');
-
-      validateComment(this.reply['_id'], this.$store.state.username).then(result => {
-        if (result.errno === 0) {
-          this.selected = true;
-        }
-      })
+      this.$store.commit('updateMark', '');
+      // 是否点过赞
+      this.isLike = this.replyData.likeId.includes(this.$store.state.id)
     }
   }
 
 </script>
 
 <style scoped>
-  img {
+  .reply-item>img {
     float: left;
     width: 24px;
     height: 24px;
-    margin-top: 15px;
+    margin-top: 16px;
     border-radius: 50%;
-    background-color: aqua;
+    object-fit: cover;
+    cursor: pointer;
   }
 
   .reply-item>div {
-    margin-left: 50px;
+    margin-left: 35px;
     padding: 10px 0;
     overflow: hidden;
   }
 
   h4 {
     float: left;
-    margin: 8px 5px 0 0;
-    font-size: 12px;
+    margin-top: 8px;
+    font-size: 14px;
     line-height: 18px;
+    color: #000;
+  }
+
+  b {
+    margin-right: 10px;
+    font-size: 12px;
     font-weight: 700;
-    color: #6d757a
+    color: #6d757a;
+    cursor: pointer;
+  }
+
+  b:hover {
+    color: #00a1d6;
+  }
+
+  i {
+    margin-left: 5px;
+    font-size: 14px;
+    color: #00a1d6;
+    cursor: pointer;
+  }
+
+  i:hover {
+    color: #f25d8e;
   }
 
   p {
@@ -187,6 +239,10 @@
     margin-right: 20px;
   }
 
+  .info span:nth-child(n+2) {
+    cursor: pointer;
+  }
+
   .info span:nth-child(n+2):hover {
     color: #00a1d6;
   }
@@ -205,7 +261,7 @@
     height: 48px;
     margin-top: 8px;
     border-radius: 50%;
-    background-color: aqua;
+    object-fit: cover;
   }
 
   .send textarea {
@@ -243,7 +299,7 @@
     background-color: #0793b9;
   }
 
-  .isSelected {
+  .like {
     color: #00a1d6;
   }
 

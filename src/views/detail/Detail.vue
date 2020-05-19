@@ -1,7 +1,7 @@
 <template>
   <div id="detail" class="clearfix">
-    <detail-content :blog="getBlog" :list="list"></detail-content>
-    <detail-aside :blog="getBlog"></detail-aside>
+    <detail-content :blog="blog"></detail-content>
+    <detail-aside :blog="blog"></detail-aside>
   </div>
 </template>
 
@@ -9,57 +9,44 @@
   import DetailContent from './childcomps/DetailContent'
   import DetailAside from './childcomps/DetailAside'
 
-  import { getList } from 'network/comment'
-
+  import { getDetail } from 'network/blog'
   export default {
     name: 'Detail',
     data() {
       return {
-        list: [] // 博客评论
+        blog: null, // 博客数据
       }
     },
-    computed: {
-      getBlog() {
-        let blog = this.$route.query.blog;
-        blog.content = blog.content.split(/\n|\r|\n\r/);
-        blog.content = blog.content.map(item => {
-          if (item === '') {
-            return '\n';
-          }
-          return item;
-        })
-        return blog
+    watch: {
+      // 路径改变时重新发起请求
+      '$route.path': function() {
+        this.getDetail()
       }
     },
     components: {
       DetailContent,
       DetailAside
     },
+    methods: {
+      // 请求博客数据
+      getDetail() {
+        this.$load.show();
+        getDetail(this.$route.params.bid, this.$store.state.id).then(res => {
+          if(res.errno == 0) {
+            document.title = res.data.title + ' - blackblog';
+            this.blog = res.data;
+            this.blog.commentInfo.reverse();
+            window.scrollTo(0, 0);
+            this.$store.commit('updateHistory', this.$route.params.bid)
+          } else {
+            this.$router.back();
+            this.$notice.show('该博客已经不存在了！！')
+          }
+        })
+      }
+    },
     created() {
-      this.$load.show();
-
-      getList(this.getBlog['_id']).then(data => {
-        if (data.errno === 0) {
-          data.data.forEach(item => {
-            if(item.parentId == this.$route.params.bid) {
-              item.replies = [];
-              this.list.push(item);
-            } else {
-              this.list.forEach(el => {
-                if(item.parentId == el['_id']) {
-                  el.replies.push(item);
-                }
-              })
-            }
-          });
-          this.list = this.list.reverse();
-
-          this.$load.hidden();
-        } else if (data.errno === -1) {
-          alert('获取失败');
-        }
-        window.scrollTo(0, 0);
-      })
+      this.getDetail()
     }
   }
 
