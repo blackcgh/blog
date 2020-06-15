@@ -15,7 +15,6 @@
           <em class="iconfont" :class="{like: isLike}" @click="like">&#xe601;</em>
           {{likeNum}}
         </span>
-        <span><em class="iconfont">&#xe602;</em> 54</span>
         <!-- 回复按钮 -->
         <span @click="reply">回复</span>
       </div>

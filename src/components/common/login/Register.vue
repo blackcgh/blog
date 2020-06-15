@@ -131,7 +131,6 @@
     padding-left: 15px;
     margin-bottom: 25px;
     border: 1px solid #c6d8f2;
-    ;
     font-size: 14px;
     box-sizing: border-box;
     z-index: 1;
@@ -141,6 +140,7 @@
     position: absolute;
     left: 0;
     font-size: 12px;
+    line-height: 12px;
     color: #f56c6c;
   }
 

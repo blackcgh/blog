@@ -22,7 +22,7 @@
         <!-- 点赞数 -->
         <em class="iconfont">&#xec43;</em><i>{{item.likeNum}}</i>
         <!-- 评论数 -->
-        <em class="iconfont">&#xe66e;</em><i>{{item.commentInfo}}</i>
+        <em class="iconfont" v-if="showCom">&#xe66e;</em><i>{{getComNum(item)}}</i>
         <!-- 时间 -->
         <em class="iconfont" v-if="showTime">&#xe612;</em>
         <i class="last" v-if="showTime">{{format}}</i>
@@ -64,6 +64,11 @@
       showOption: {
         type: Boolean,
         default: false
+      },
+      // 是否显示评论数
+      showCom: {
+        type: Boolean,
+        default: true
       }
     },
     computed: {
@@ -78,6 +83,12 @@
       },
       getBlogImg() {
         return getBlogImg
+      },
+      getComNum() {
+        return function(item) {
+          if(item.commentInfo) return item.commentInfo.length;
+          return 0
+        }
       }
     },
     methods: {

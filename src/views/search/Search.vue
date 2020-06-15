@@ -75,8 +75,8 @@
       }
     },
     watch: {
-      '$route.query.keyword': function() {
-        this.search()
+      '$route.query.keyword': function(val) {
+        this.search(val)
       }
     },
     components: {

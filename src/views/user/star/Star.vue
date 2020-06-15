@@ -65,7 +65,8 @@
             :key="index"
             :item="item"
             :showAuthor="false"
-            :showOption="getFlag">
+            :showOption="getFlag"
+            :showCom="false">
             <ul v-if="getFlag">
               <li @click="moveStar(index)">移动到</li>
               <li @click="delStar(index)">取消收藏</li>
@@ -80,7 +81,7 @@
               @success="finish(moveIndex)">
             </add-star>
         </div>
-        <div v-else class="none">
+        <div class="none" v-else>
           <div v-if="isLoad">loading...</div>
           <div v-else>该收藏夹还没有博客~</div>
         </div>
@@ -347,7 +348,7 @@
         if (bids.length != 0) {
           getStarBlog(bids).then(res => {
             this.isLoad = false;
-            this.starBlog = res.data
+            this.starBlog = res.data;
           })
         } else {
           this.isLoad = false

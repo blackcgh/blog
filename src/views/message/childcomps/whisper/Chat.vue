@@ -295,6 +295,7 @@
 
   .img {
     position: relative;
+    width: 22px;
     height: 21px;
     margin: 10px 0;
   }

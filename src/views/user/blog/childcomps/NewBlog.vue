@@ -153,8 +153,6 @@
                       formData.append('object', 'product');
                       // 图片上传
                       uploadBlogImg(formData).then(res => {
-                        console.log(res);
-
                         const length = self.quill.getSelection(true).index;
                         self.quill.insertEmbed(length, 'image', res.message);
                         self.quill.setSelection(length + 1);
@@ -287,6 +285,7 @@
   .context textarea.title {
     color: #222;
     font-weight: 700;
+    overflow: hidden;
   }
 
   .ql-toolbar {
@@ -361,7 +360,7 @@
     margin-right: 20px;
     background-color: #00a1d6;
     text-align: center;
-    color: #fff;
+    color: #fff!important;
     font-size: 14px;
     line-height: 28px;
     border-radius: 15px;

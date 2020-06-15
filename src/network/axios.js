@@ -3,7 +3,7 @@ import originAxios from 'axios'
 export default function axios(config) {
   return new Promise((resolve, reject) => {
     const instance = originAxios.create({
-      baseURL: 'http://localhost/api',
+      baseURL: '/api',
       headers:{'Content-Type':'application/json'},
       withCredentials: true,
       timeout: 5000

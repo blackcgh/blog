@@ -145,6 +145,7 @@
     position: absolute;
     left: 0;
     font-size: 12px;
+    line-height: 12px;
     color: #f56c6c;
   }
 

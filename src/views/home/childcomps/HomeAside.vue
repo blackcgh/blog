@@ -42,9 +42,9 @@
     <aside-content>
       公告栏
       <template v-slot:content>
-        <ul>
-          <li v-for="item of links" :key="item">{{item}}</li>
-        </ul>
+        <div class="notice">
+          任何人不得发布任何不良内容，否则本站将会删除您的博客并视情况注销您的账号!!!
+        </div>
       </template>
     </aside-content>
   </div>
@@ -57,11 +57,6 @@
 
   export default {
     name: 'HomeAside',
-    data() {
-      return {
-        links: ['前端']
-      }
-    },
     props: ['blog', 'user'],
     computed: {
       // 获取关注按钮文字
@@ -276,6 +271,10 @@
   .fixed {
     position: fixed;
     right: 158px;
+  }
+
+  .notice {
+    font-size: 14px;
   }
 
 </style>
